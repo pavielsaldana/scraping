@@ -58,8 +58,7 @@ def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks):
-    #openai_api_key = os.getenv('OPENAI_API_KEY')
+def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
@@ -159,11 +158,10 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             domain = row[column_name]
             links_obtenidos = buscar_enlaces_organicos(formatted_keywords, domain)
             text = process_url_data(links_obtenidos)
-            st.write(text)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks)
+                    vectorstore = get_vectors(text_chunks, openai_api_key)
                     num_tokens = num_tokens_consumed_by_embedding_request(text_chunks)
                     search_question = "Chemical, Shipping, delivery"
                     llm_question = prompt
