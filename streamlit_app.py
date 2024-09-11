@@ -12,7 +12,15 @@ def install_playwright_browsers():
     except subprocess.CalledProcessError as e:
         st.error(f"Failed to install Playwright browsers. Error: {e}")
         st.code(e.output, language="bash")
-        st.stop()
+        try:
+            st.warning("Attempting to install with sudo...")
+            result = subprocess.run(["sudo", sys.executable, "-m", "playwright", "install", "chromium"], capture_output=True, text=True, check=True)
+            st.success("Playwright browsers installed successfully with sudo!")
+            st.code(result.stdout, language="bash")
+        except subprocess.CalledProcessError as e:
+            st.error(f"Failed to install Playwright browsers with sudo. Error: {e}")
+            st.code(e.output, language="bash")
+            st.stop()
 
 def check_playwright_installation():
     try:
@@ -28,14 +36,13 @@ def init_app():
     with st.spinner("Initializing app and checking dependencies..."):
         check_playwright_installation()
     
-    # Uncomment these lines if you want to display debug information
-    # st.write("Environment Variables:")
-    # st.json(dict(os.environ))
-    # st.write("Python Executable:", sys.executable)
-    # st.write("Python Version:", sys.version)
-    # st.write("Current Working Directory:", os.getcwd())
-    # st.write("Contents of current directory:")
-    # st.code("\n".join(os.listdir()))
+    st.write("Environment Variables:")
+    st.json(dict(os.environ))
+    st.write("Python Executable:", sys.executable)
+    st.write("Python Version:", sys.version)
+    st.write("Current Working Directory:", os.getcwd())
+    st.write("Contents of current directory:")
+    st.code("\n".join(os.listdir()))
 
 # Initialize the app
 init_app()
