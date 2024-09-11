@@ -1,6 +1,17 @@
 import streamlit as st
 
-st.title("🎈 My new app")
-st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
+welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
+                       title="Welcome",)
+linkedin_scraping_page = st.Page("streamlit_scripts/streamlit_linkedin_scraping.py",
+                                title="LinkedIn scraping",)
+linkedin_search_page = st.Page("streamlit_scripts/streamlit_linkedin_search.py",
+                               title = "LinkedIn search",)
+linkedin_outreach_page = st.Page("streamlit_scripts/streamlit_linkedin_outreach.py",
+                                 title = "LinkedIn outreach",)
+pg = st.navigation(
+    {
+        "Welcome": [welcome_page,],
+        "LinkedIn scripts": [linkedin_scraping_page, linkedin_search_page, linkedin_outreach_page],
+    }
 )
+pg.run()

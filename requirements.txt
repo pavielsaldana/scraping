@@ -1,1 +1,8 @@
+google-auth
+gspread
+gspread_dataframe
+playwright
+python-dotenv
 streamlit
+tqdm
+tldextract
