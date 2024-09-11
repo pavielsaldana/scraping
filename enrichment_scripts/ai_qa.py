@@ -1,29 +1,29 @@
-import streamlit as st
+import gspread
 import http.client
 import json
-import requests
-import gspread
 import pandas as pd
 import re
+import requests
+import streamlit as st
 
-from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.chains.question_answering import load_qa_chain
-from langchain.callbacks import get_openai_callback
-from openlimit.utilities import num_tokens_consumed_by_embedding_request
-from langchain.chat_models import ChatOpenAI
-from zenrows import ZenRowsClient
+from gspread_dataframe import set_with_dataframe
 from google.oauth2.service_account import Credentials
+from langchain.callbacks import get_openai_callback
+from langchain.chains.question_answering import load_qa_chain
+from langchain.chat_models import ChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import FAISS
+from openlimit.utilities import num_tokens_consumed_by_embedding_request
+from zenrows import ZenRowsClient
 
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
-serper_api = '689a38f1e3cd679dbce702437c376783b5a24c85' #@param {type:"string"}
-error_message = "Error 422"
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
+serper_api = '689a38f1e3cd679dbce702437c376783b5a24c85' #@param {type:"string"}
+error_message = "Error 422"
 
 def buscar_enlaces_organicos(keywords, row):
     conn = http.client.HTTPSConnection("google.serper.dev")
@@ -92,7 +92,7 @@ def split_text(text):
         return error_message, None
     if pd.isna(text) or not text:
         return None, None
-    print("Text to split:", text)  # Debugging step
+    print("Text to split:", text)
     parts = re.split(r'\. |, ', text, 1)
     if len(parts) == 0:
         return None, None
