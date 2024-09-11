@@ -26,6 +26,7 @@ error_message = "Error 422"
 
 # API keys setup
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
+st.write(openai_api_key)
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
@@ -93,6 +94,7 @@ def get_text_chunks(text):
 
 # Function to create vectors from text chunks using FAISS
 def get_vectors(text_chunks):
+    st.write(f"USINGTHIS{openai_api_key}")
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
@@ -138,7 +140,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 text_chunks = get_text_chunks(text)
 
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks)
+                    vectorstore = get_vectors(text_chunks, openai_api_key)
                     search_question = "Chemical, Shipping, delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
