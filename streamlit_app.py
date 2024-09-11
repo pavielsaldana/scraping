@@ -3,6 +3,39 @@ import subprocess
 import sys
 import os
 from playwright.sync_api import sync_playwright
+import subprocess
+import sys
+
+def install_playwright_deps():
+    try:
+        result = subprocess.run(["sudo", "playwright", "install-deps"], capture_output=True, text=True, check=True)
+        st.success("Playwright dependencies installed successfully!")
+        st.code(result.stdout, language="bash")
+    except subprocess.CalledProcessError as e:
+        st.error(f"Failed to install Playwright dependencies. Error: {e}")
+        st.code(e.output, language="bash")
+
+# Call this function in your init_app() function
+install_playwright_deps()
+
+def install_system_deps():
+    try:
+        cmd = [
+            "sudo", "apt-get", "install", "-y",
+            "libnss3", "libnspr4", "libatk1.0-0", "libatk-bridge2.0-0",
+            "libcups2", "libdrm2", "libxkbcommon0", "libatspi2.0-0",
+            "libxcomposite1", "libxdamage1", "libxfixes3", "libxrandr2",
+            "libgbm1", "libpango-1.0-0", "libcairo2", "libasound2"
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        st.success("System dependencies installed successfully!")
+        st.code(result.stdout, language="bash")
+    except subprocess.CalledProcessError as e:
+        st.error(f"Failed to install system dependencies. Error: {e}")
+        st.code(e.output, language="bash")
+
+# Call this function in your init_app() function if install_playwright_deps() fails
+install_system_deps()
 
 def install_playwright_browsers():
     try:
@@ -34,7 +67,11 @@ def check_playwright_installation():
 
 def init_app():
     with st.spinner("Initializing app and checking dependencies..."):
+        install_playwright_deps()
+        install_system_deps()
         check_playwright_installation()
+    
+    # ... rest of your init_app function ...
     
     st.write("Environment Variables:")
     st.json(dict(os.environ))
