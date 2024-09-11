@@ -41,11 +41,11 @@ if linkedin_search_option == "Get the first result from lead search (first name,
     st.write("Name of the sheet where the first names, last names and company names are located.")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     st.write("Name of the column where the first names are located.")
-    first_name_column_name = st.text_input("Column name", key="first_name_column_name")
+    first_name_column_name = st.text_input("First name column name", key="first_name_column_name")
     st.write("Name of the column where the last names are located.")
-    last_name_column_name = st.text_input("Column name", key="last_name_column_name")
+    last_name_column_name = st.text_input("Last name column name", key="last_name_column_name")
     st.write("Name of the column where the company names are located.")
-    company_name_column_name = st.text_input("Column name", key="company_name_column_name")
+    company_name_column_name = st.text_input("Company name column name", key="company_name_column_name")
 if linkedin_search_option == "Get the first result from lead search (any query)":
     st.write("LinkedIn authentication cookie.")
     li_at = st.text_input("li_at", "")
@@ -54,7 +54,7 @@ if linkedin_search_option == "Get the first result from lead search (any query)"
     st.write("Name of the sheet where the queries are located.")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     st.write("Name of the column where the queries are located.")
-    query_column_name = st.text_input("Column name", key="query_column_name")
+    query_column_name = st.text_input("Query column name", key="query_column_name")
 if linkedin_search_option == "Get the first result from account search (company name)":
     st.write("LinkedIn authentication cookie.")
     li_at = st.text_input("li_at", key="li_at")
@@ -63,7 +63,7 @@ if linkedin_search_option == "Get the first result from account search (company 
     st.write("Name of the sheet where the company names are located.")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     st.write("Name of the column where the company names are located.")
-    company_name_column_name = st.text_input("Column name", key="company_name_column_name")
+    company_name_column_name = st.text_input("Company name column name", key="company_name_column_name")
 
 if linkedin_search_option != "Select one LinkedIn search script":
     if st.button("Start searching"):
