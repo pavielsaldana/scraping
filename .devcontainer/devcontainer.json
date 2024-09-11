@@ -16,16 +16,14 @@
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && apt-get update && apt-get install -y $(cat packages.txt); [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
-  "postCreateCommand": "apt-get update && apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 && PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install-deps && PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && echo '✅ Playwright dependencies and browsers installed'",
-  "postAttachCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false",
+  "updateContentCommand": "[ -f packages.txt ] && apt-get update && apt-get install -y $(cat packages.txt); [ -f requirements.txt ] && pip3 install -r requirements.txt; pip3 install streamlit",
+  "postCreateCommand": "apt-get update && apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 && PLAYWRIGHT_BROWSERS_PATH=/home/appuser/.cache/ms-playwright playwright install-deps && PLAYWRIGHT_BROWSERS_PATH=/home/appuser/.cache/ms-playwright playwright install chromium",
+  "postAttachCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/appuser/.cache/ms-playwright playwright install chromium",
   "portsAttributes": {
     "8501": {
       "label": "Application",
       "onAutoForward": "openPreview"
     }
   },
-  "forwardPorts": [
-    8501
-  ]
+  "forwardPorts": [8501]
 }
