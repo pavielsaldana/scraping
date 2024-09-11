@@ -6,3 +6,7 @@ python-dotenv
 streamlit
 tqdm
 tldextract
+beautifulsoup4
+langchain==0.0.349
+openlimit==0.3.0
+zenrows

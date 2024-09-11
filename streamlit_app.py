@@ -14,10 +14,13 @@ linkedin_search_page = st.Page("streamlit_scripts/streamlit_linkedin_search.py",
                                title = "LinkedIn search",)
 linkedin_outreach_page = st.Page("streamlit_scripts/streamlit_linkedin_outreach.py",
                                  title = "LinkedIn outreach",)
+ai_qa_page = st.Page("streamlit_scripts/streamlit_ai_qa.py",
+                                 title = "AI QA",)
 pg = st.navigation(
     {
         "Welcome": [welcome_page,],
         "LinkedIn scripts": [linkedin_scraping_page, linkedin_search_page, linkedin_outreach_page],
+        "Enrichment scripts": [ai_qa_page],
     }
 )
 
