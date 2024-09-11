@@ -13,7 +13,7 @@ def test_faiss_vectorstore():
         text_samples = ["sample text one", "sample text two"]
         # Generate vectorstore
         vectorstore = FAISS.from_texts(text_samples, embedding=embeddings)
-        st.write(vectorstore)
+        st.write(embeddings)
         st.write("FAISS vectorstore created successfully!")
         return vectorstore
     except Exception as e:
