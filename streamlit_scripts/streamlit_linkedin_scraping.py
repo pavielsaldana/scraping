@@ -9,6 +9,7 @@ sys.path.append(os.path.abspath('../linkedin_scripts'))
 from linkedin_scripts.linkedin_scraping import *
 
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
+key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 st.title("LinkedIn scraping scripts")
 class StreamlitConsole:
