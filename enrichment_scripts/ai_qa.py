@@ -1,47 +1,39 @@
-import streamlit as st
 import http.client
-import json
-import requests
-import gspread
-import pandas as pd
-import re
-
-from gspread_dataframe import set_with_dataframe
-from bs4 import BeautifulSoup
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.chains.question_answering import load_qa_chain
-from langchain.callbacks import get_openai_callback
-from openlimit.utilities import num_tokens_consumed_by_embedding_request
-from langchain.chat_models import ChatOpenAI
-from zenrows import ZenRowsClient
-from google.oauth2.service_account import Credentials
+import streamlit as st
 
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
-serper_api = '689a38f1e3cd679dbce702437c376783b5a24c85' #@param {type:"string"}
-error_message = "Error 422"
+serper_api= '689a38f1e3cd679dbce702437c376783b5a24c85'
+
 
 def buscar_enlaces_organicos(keywords, row):
     conn = http.client.HTTPSConnection("google.serper.dev")
     payload = json.dumps({
-        'q': f'{keywords} site:{row}',
-        "num": 8
+      'q': f' {keywords} site:{row}',
+      "num": 8
     })
     headers = {
-        'X-API-KEY': serper_api,
-        'Content-Type': 'application/json'
+      'X-API-KEY': serper_api,
+      'Content-Type': 'application/json'
     }
     conn.request("POST", "/search", payload, headers)
     res = conn.getresponse()
     data = res.read()
+
+    # Convertir el texto de la respuesta a un diccionario de Python
     data_dict = json.loads(data.decode("utf-8"))
+
+    # Acceder a los elementos en la sección 'organic'
     organic_results = data_dict.get('organic', [])
+
+    # Extraer los enlaces de cada resultado orgánico y convertirlos a HTTP
     links = [result['link'].replace("https://", "http://") for result in organic_results if 'link' in result and not result['link'].lower().endswith('.pdf')]
+
+    # Añadir el dominio con HTTP
     links.append(f'http://{row}')
+
     return links[:3]
 
 def get_text_from_url(url):
@@ -62,6 +54,7 @@ def get_text_from_url(url):
     except requests.exceptions.RequestException as e:
         return f"Error de solicitud: {e}"
 
+
 def process_url_data(urls):
     combined_text = ''
     for url in urls:
@@ -70,48 +63,49 @@ def process_url_data(urls):
             combined_text += text + " "
     return combined_text
 
+
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks, openai_api_key):
+def get_vectors(text_chunks):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
     docs = vectorstore.similarity_search(search_question)
-    llm = ChatOpenAI(temperature=0.9, max_tokens=4000, model="gpt-4o-mini")
+    llm = ChatOpenAI(temperature=0.9, max_tokens= 4000, model="gpt-4o-mini")
     chain = load_qa_chain(llm, chain_type="stuff")
-    response = chain.run(input_documents=docs, question=llm_question)
-    print("LLM Response:", response)  # Debugging step
-    return response
+    return chain.run(input_documents=docs, question=llm_question)
+
 
 def split_text(text):
     global error_message
     if text == error_message:
+        # Si text es igual a error_message, retorna error_message sin cambios
         return error_message, None
-    if pd.isna(text) or not text.strip():
+    if pd.isna(text) or not text:
         return None, None
-
-    print("Text to split:", text)  # Debugging step
-    
-    # Broaden the splitting pattern to include more delimiters
-    parts = re.split(r'[.!?,;:]\s+', text, 1)
-    
-    if len(parts) == 0:
-        return None, None
-    
-    # Extract the first part as the QA (question/answer) and the second as the reason
-    QA = parts[0] if len(parts) > 0 else None
+    # Dividir el texto en la primera aparición de un punto o una coma
+    parts = re.split(r'\. |, ', text, 1)
+    # Asignar la primera palabra (Yes, No o Maybe) a la columna 'QA'
+    QA = parts[0].split()[0] if len(parts) > 0 else None
+    # Asignar el texto restante a la columna 'Reason'
     reason = parts[1] if len(parts) > 1 else None
-    
     return QA, reason
 
 
 def format_keywords(input_string):
+    # Divide el input_string en una lista separada por comas y quita espacios adicionales
     keywords_list = [keyword.strip() for keyword in input_string.split(",")]
+    # Formatea cada palabra clave con comillas
     keywords_final = ['"' + keyword + '"' for keyword in keywords_list]
+    # Une las palabras clave con " | " entre ellas
     return " | ".join(keywords_final)
+
+
+
+#KEYWORDS FUNCTIONS
 
 def check_for_error(response):
     error_keywords = [r'\berror\b',r'\btimeout\b',r'\b403\b']
@@ -121,35 +115,76 @@ def check_for_error(response):
     else:
         return False
 
+
+#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+
+
+import json
+import requests
+import os
+import google.auth
+import gspread
+import pandas as pd
+import tiktoken
+import tqdm
+import openlimit
+import re
+import warnings
+
+
+from google.auth import default
+from gspread_dataframe import set_with_dataframe
+from bs4 import BeautifulSoup
+
+from bs4 import BeautifulSoup
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
+from langchain.callbacks import get_openai_callback
+from openlimit.utilities import num_tokens_consumed_by_embedding_request
+from langchain.chat_models import ChatOpenAI
+from zenrows import ZenRowsClient
+
+
+
+
+
+import streamlit as st
+import pandas as pd
+from google.oauth2.service_account import Credentials
+
+
+error_message = "Error 422"
+
 def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar):
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     credentials = Credentials.from_service_account_info(key_dict, scopes=scope)
     client = gspread.authorize(credentials)
     spreadsheet = client.open_by_url(spreadsheet_url)
     worksheet = spreadsheet.worksheet(sheet_name)
     data = worksheet.get_all_values()
     dataframe = pd.DataFrame(data[1:], columns=data[0])
+
     num_rows = dataframe.shape[0]
 
     for index, row in dataframe.iterrows():
         try:
             domain = row[column_name]
-            print(f"Processing row {index} with domain {domain}")  # Debugging step
             links_obtenidos = buscar_enlaces_organicos(formatted_keywords, domain)
             text = process_url_data(links_obtenidos)
             if text != error_message:
-                print("Text successfully retrieved for domain:", domain)  # Debugging step
                 text_chunks = get_text_chunks(text)
+
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks, openai_api_key)
-                    try:
-                        num_tokens = num_tokens_consumed_by_embedding_request(text_chunks)
-                        print(f"Number of tokens: {num_tokens}")  # Debugging step
-                    except Exception as e:
-                        print(f"Token calculation error: {e}")
+                    vectorstore = get_vectors(text_chunks)
+                    num_tokens = num_tokens_consumed_by_embedding_request(text_chunks)
                     search_question = "Chemical, Shipping, delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
@@ -169,6 +204,8 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             error_message = str(e)
             dataframe.at[index, 'QA'] = error_message
             print(f"Error processing row {index}: {error_message}")
+
+        # Actualizar la barra de progreso
         progress_bar.progress((index + 1) / num_rows)
 
     df_final = dataframe
@@ -179,3 +216,33 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     set_with_dataframe(worksheet, df_final, include_index=False, resize=True, allow_formulas=True)
 
     return df_final, totalcost
+
+st.title("QA with Searching Keyword")
+
+spreadsheet_url = st.text_input("URL de Google Sheets", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
+sheet_name = st.text_input("Nombre de la hoja", "Test")
+column_name = st.text_input("Nombre de la columna", "domain")
+serper_API = st.text_input("Seleccione un API de Serper", "81ead61f8203d7445b4c38d383d58422eb6963ae")
+
+keywords = st.text_area("Introduce las keywords separadas por comas", "Delivery, Shipping, last mile, White Glove, final mile")
+keywords_list = [keyword.strip() for keyword in keywords.split(',')]
+keywords_final = ['"' + keyword + '"' for keyword in keywords_list]
+formatted_keywords = " | ".join(keywords_final)
+st.write("Keywords formateadas:", formatted_keywords)
+
+prompt = st.text_area("Introduce el prompt", "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine.")
+
+if st.button("Iniciar procesamiento"):
+    if not spreadsheet_url or not serper_API:
+        st.error("Please enter both the Spreadsheet URL and the Serper API key")
+    else:
+        with st.spinner("Running the scraper. This could take a few minutes depending on the list size..."):
+            try:
+                progress_bar = st.progress(0)
+                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar)
+                st.success("Scraping completed!")
+                st.dataframe(result)
+                st.write(f"El costo total fue: ${totalcost:.6f}")
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+                st.exception(e)
