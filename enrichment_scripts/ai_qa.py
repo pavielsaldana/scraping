@@ -20,10 +20,10 @@ from google.oauth2.service_account import Credentials
 
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
-serper_api = '689a38f1e3cd679dbce702437c376783b5a24c85' #@param {type:"string"}
-error_message = "Error 422"
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
+serper_api = '689a38f1e3cd679dbce702437c376783b5a24c85' #@param {type:"string"}
+error_message = "Error 422"
 
 def buscar_enlaces_organicos(keywords, row):
     conn = http.client.HTTPSConnection("google.serper.dev")
