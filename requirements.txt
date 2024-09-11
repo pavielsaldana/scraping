@@ -1,5 +1,6 @@
 langchain==0.0.349
 faiss-cpu
+openai==0.28.1
 openlimit==0.3.0
 google-auth
 gspread
