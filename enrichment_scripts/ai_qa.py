@@ -29,6 +29,7 @@ openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
+serper_api = "689a38f1e3cd679dbce702437c376783b5a24c85"
 
 # Function to fetch organic links using Serper API
 def buscar_enlaces_organicos(keywords, row):
@@ -115,6 +116,7 @@ def split_text(text):
 
 # Main function to process the data from the Google Sheet and populate results
 def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar):
+    openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     total_cost = 0
