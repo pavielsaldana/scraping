@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import streamlit as st
 import sys
@@ -7,6 +8,8 @@ sys.path.append(os.path.abspath('../helper_scripts'))
 from helper_scripts.helper_scripts import *
 sys.path.append(os.path.abspath('../linkedin_scripts'))
 from linkedin_scripts.linkedin_scraping import *
+
+key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 
 st.title("LinkedIn scraping scripts")
 class StreamlitConsole:
@@ -134,7 +137,7 @@ if linkedin_scraping_option != "Select one LinkedIn scraping script":
             st.error("Please fill spreadsheet URL.")
         if li_at and spreadsheet_url:
             try:
-                dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name)
+                dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
                     JSESSIONID, li_a, csrf_token, cookies_dict = asyncio.run(retrieve_tokens(li_at))
                     if linkedin_scraping_option == "Sales Navigator lead search export":
@@ -155,7 +158,7 @@ if linkedin_scraping_option != "Select one LinkedIn scraping script":
                         dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict)
                     if linkedin_scraping_option == "LinkedIn job offer details scrape":
                         dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict)  
-                    write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result)
+                    write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     st.success("Scraping completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
