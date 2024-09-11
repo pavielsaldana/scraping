@@ -63,7 +63,7 @@ if linkedin_search_option == "Get the first result from account search (company 
     st.write("Name of the sheet where the company names are located.")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     st.write("Name of the column where the company names are located.")
-    company_name_column_name = st.text_input("Company name column name", key="company_name_column_name")
+    company_column_name = st.text_input("Company name column name", key="company_column_name")
 
 if linkedin_search_option != "Select one LinkedIn search script":
     if st.button("Start searching"):
@@ -92,6 +92,7 @@ if linkedin_search_option != "Select one LinkedIn search script":
                         script_type = 'company_search_company_name'
                         first_name_column_name = None
                         last_name_column_name = None
+                        company_name_column_name = None
                         query_column_name = None
                         dataframe_result = linkedin_search_scripts(csrf_token, dataframe_input, script_type, first_name_column_name, last_name_column_name, company_name_column_name, query_column_name, company_column_name, cookies_dict)
                     write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
