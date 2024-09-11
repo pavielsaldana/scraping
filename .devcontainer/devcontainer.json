@@ -1,13 +1,6 @@
 {
   "name": "Python 3",
   "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": "true",
-      "username": "vscode",
-      "upgradePackages": "true"
-    }
-  },
   "customizations": {
     "codespaces": {
       "openFiles": [
@@ -23,11 +16,11 @@
       ]
     }
   },
-  "updateContentCommand": "sudo apt-get update && sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 && pip3 install --user -r requirements.txt && pip3 install --user streamlit playwright && playwright install chromium && echo '✅ Packages installed and Requirements met'",
-  "postCreateCommand": "playwright install-deps && echo '✅ Playwright dependencies installed'",
+  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y < packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
     "server": "streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
+  "postCreateCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && playwright install --with-deps && echo '✅ Playwright dependencies and browsers installed'",
   "portsAttributes": {
     "8501": {
       "label": "Application",
@@ -36,8 +29,5 @@
   },
   "forwardPorts": [
     8501
-  ],
-  "remoteEnv": {
-    "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright"
-  }
+  ]
 }
