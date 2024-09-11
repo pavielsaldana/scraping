@@ -92,7 +92,7 @@ def get_text_chunks(text):
     return text_splitter.split_text(text)
 
 # Function to create vectors from text chunks using FAISS
-def get_vectors(text_chunks, openai_api_key):
+def get_vectors(text_chunks):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
@@ -139,7 +139,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 text_chunks = get_text_chunks(text)
 
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks, openai_api_key)
+                    vectorstore = get_vectors(text_chunks)
                     search_question = "Chemical, Shipping, delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
