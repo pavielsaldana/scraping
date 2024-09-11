@@ -159,6 +159,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             domain = row[column_name]
             links_obtenidos = buscar_enlaces_organicos(formatted_keywords, domain)
             text = process_url_data(links_obtenidos)
+            st.write(text)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
