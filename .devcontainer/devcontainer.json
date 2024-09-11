@@ -16,8 +16,8 @@
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y < packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 && sudo playwright install-deps && PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && echo '✅ Playwright dependencies and browsers installed'",
+  "updateContentCommand": "[ -f packages.txt ] && sudo apt-get update && sudo apt-get install -y $(cat packages.txt); [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 && PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install-deps && PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && echo '✅ Playwright dependencies and browsers installed'",
   "postAttachCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false",
   "portsAttributes": {
     "8501": {
