@@ -26,7 +26,6 @@ error_message = "Error 422"
 
 # API keys setup
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
-st.write(openai_api_key)
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
