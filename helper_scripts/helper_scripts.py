@@ -1,9 +1,11 @@
 import gspread
 import pandas as pd
+import streamlit as st
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
 from playwright.async_api import async_playwright
 
+key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 def safe_extract(data, *keys):
     try:
         for key in keys:
@@ -59,7 +61,7 @@ async def retrieve_tokens(li_at):
                 li_a = cookie['value']
         await browser.close()
         return JSESSIONID, li_a, csrf_token, cookies_dict
-def write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe, key_dict):
+def write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     credentials = Credentials.from_service_account_info(key_dict, scopes=scope)
     client = gspread.authorize(credentials)
@@ -68,7 +70,7 @@ def write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe, key_dict):
     set_with_dataframe(worksheet, dataframe, include_index=False, resize=True, allow_formulas=True)
 def write_into_csv(dataframe, file_name):
     dataframe.to_csv(f'{file_name}.csv',index=False,escapechar='\\')
-def retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict):
+def retrieve_spreadsheet(spreadsheet_url, sheet_name):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     credentials = Credentials.from_service_account_info(key_dict, scopes=scope)
     client = gspread.authorize(credentials)
