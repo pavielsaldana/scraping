@@ -16,8 +16,8 @@
       ]
     }
   },
-  "updateContentCommand": "pip3 install --user -r requirements.txt; pip3 install --user streamlit playwright; playwright install chromium; echo '✅ Packages installed and Requirements met'",
-  "postCreateCommand": "playwright install chromium && echo '✅ Playwright dependencies and browsers installed'",
+  "updateContentCommand": "pip3 install --user -r requirements.txt; pip3 install --user streamlit playwright; echo '✅ Packages installed and Requirements met'",
+  "postCreateCommand": "python -m playwright install chromium && echo '✅ Playwright dependencies and browsers installed'",
   "postAttachCommand": {
     "server": "streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
