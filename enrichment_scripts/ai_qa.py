@@ -1,6 +1,5 @@
 import streamlit as st
 import http.client
-import os
 
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
@@ -209,7 +208,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
 
     df_final = dataframe
     df_final['QA'], df_final['Reason'] = zip(*df_final['result'].apply(split_text))
-    df_final = df_final[[column_name, 'QA', 'Reason', 'result', 'Error']]
+    df_final = df_final[[column_name, 'QA', 'Reason', 'result']]
 
     worksheet.clear()
     set_with_dataframe(worksheet, df_final, include_index=False, resize=True, allow_formulas=True)
