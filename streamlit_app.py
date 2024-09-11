@@ -18,4 +18,5 @@ pg = st.navigation(
         "LinkedIn scripts": [linkedin_scraping_page, linkedin_search_page, linkedin_outreach_page],
     }
 )
+
 pg.run()

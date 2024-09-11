@@ -19,7 +19,7 @@ def reset_inputs():
     st.session_state["last_name_column_name"] = ""
     st.session_state["company_name_column_name"] = ""
     st.session_state["query_column_name"] = ""
-    st.session_state["company_name_column_name"] = ""
+    st.session_state["company_column_name"] = ""
 if "previous_option" not in st.session_state:
     st.session_state["previous_option"] = "Select one LinkedIn search script"
 linkedin_search_option = st.selectbox(
@@ -33,6 +33,8 @@ linkedin_search_option = st.selectbox(
 if linkedin_search_option != st.session_state["previous_option"]:
     reset_inputs()
 st.session_state["previous_option"] = linkedin_search_option
+if linkedin_search_option != "Select one LinkedIn search script":
+    st.write("Before executing any script, please ensure that you share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
 if linkedin_search_option == "Get the first result from lead search (first name, last name and company name)":
     st.write("LinkedIn authentication cookie.")
     li_at = st.text_input("li_at", key="li_at")
