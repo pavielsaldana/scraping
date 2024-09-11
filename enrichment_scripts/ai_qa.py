@@ -2,8 +2,9 @@ import streamlit as st
 import http.client
 import os
 
-zenrowsApiKey = '56157ea4b37129fd19ea02fa07291069a0378c19'
-serper_api= '81ead61f8203d7445b4c38d383d58422eb6963ae'#@param {type:"string"}
+openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
+zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
+serper_api= '81ead61f8203d7445b4c38d383d58422eb6963ae' #@param {type:"string"}
 
 def buscar_enlaces_organicos(keywords, row):
     conn = http.client.HTTPSConnection("google.serper.dev")
