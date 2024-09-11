@@ -17,10 +17,10 @@
     }
   },
   "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y < packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
+  "postCreateCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install --with-deps chromium && echo '✅ Playwright dependencies and browsers installed'",
   "postAttachCommand": {
     "server": "streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
-  "postCreateCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/vscode/.cache/ms-playwright playwright install chromium && playwright install --with-deps && echo '✅ Playwright dependencies and browsers installed'",
   "portsAttributes": {
     "8501": {
       "label": "Application",
