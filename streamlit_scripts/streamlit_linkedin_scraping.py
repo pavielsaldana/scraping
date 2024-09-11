@@ -2,7 +2,6 @@ import asyncio
 import os
 import streamlit as st
 import sys
-from io import StringIO
 sys.path.append(os.path.abspath('../helper_scripts'))
 from helper_scripts.helper_scripts import *
 sys.path.append(os.path.abspath('../linkedin_scripts'))
@@ -12,14 +11,6 @@ key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 st.title("LinkedIn scraping scripts")
-class StreamlitConsole:
-    def __init__(self):
-        self.console = StringIO()    
-    def write(self, msg):
-        st.text(msg)
-    def flush(self):
-        pass
-sys.stdout = StreamlitConsole()
 def reset_inputs():
     st.session_state["li_at"] = ""
     st.session_state["spreadsheet_url"] = ""
