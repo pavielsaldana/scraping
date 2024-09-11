@@ -23,7 +23,7 @@ libgdk-pixbuf-2.0-0
 libx11-xcb1
 libxslt1.1
 libwoff1
-libevent-2.1-6
+libevent-2.1-7
 libopus0
 libwebpdemux2
 libharfbuzz-icu0
@@ -32,8 +32,8 @@ libsecret-1-0
 libhyphen0
 libmanette-0.2-0
 libflite1
-libEGL1
-libGLX0
+libegl1
+libglx0
 libgudev-1.0-0
-libGLESv2-2
-libx264-155
+libgles2
+libx264-160
