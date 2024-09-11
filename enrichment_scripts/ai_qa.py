@@ -18,19 +18,14 @@ def buscar_enlaces_organicos(keywords, row):
     conn.request("POST", "/search", payload, headers)
     res = conn.getresponse()
     data = res.read()
-
     # Convertir el texto de la respuesta a un diccionario de Python
     data_dict = json.loads(data.decode("utf-8"))
-
     # Acceder a los elementos en la sección 'organic'
     organic_results = data_dict.get('organic', [])
-
     # Extraer los enlaces de cada resultado orgánico y convertirlos a HTTP
     links = [result['link'].replace("https://", "http://") for result in organic_results if 'link' in result and not result['link'].lower().endswith('.pdf')]
-
     # Añadir el dominio con HTTP
     links.append(f'http://{row}')
-
     return links[:3]
 
 def get_text_from_url(url):
@@ -51,7 +46,6 @@ def get_text_from_url(url):
     except requests.exceptions.RequestException as e:
         return f"Error de solicitud: {e}"
 
-
 def process_url_data(urls):
     combined_text = ''
     for url in urls:
@@ -59,7 +53,6 @@ def process_url_data(urls):
         if not text.startswith("Error"):
             combined_text += text + " "
     return combined_text
-
 
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
@@ -76,7 +69,6 @@ def get_response_from_chain(vectorstore, search_question, llm_question):
     chain = load_qa_chain(llm, chain_type="stuff")
     return chain.run(input_documents=docs, question=llm_question)
 
-
 def split_text(text):
     global error_message
     if text == error_message:
@@ -92,7 +84,6 @@ def split_text(text):
     reason = parts[1] if len(parts) > 1 else None
     return QA, reason
 
-
 def format_keywords(input_string):
     # Divide el input_string en una lista separada por comas y quita espacios adicionales
     keywords_list = [keyword.strip() for keyword in input_string.split(",")]
@@ -101,10 +92,7 @@ def format_keywords(input_string):
     # Une las palabras clave con " | " entre ellas
     return " | ".join(keywords_final)
 
-
-
 #KEYWORDS FUNCTIONS
-
 def check_for_error(response):
     error_keywords = [r'\berror\b',r'\btimeout\b',r'\b403\b']
     regex_pattern = '|'.join(error_keywords)
@@ -115,13 +103,10 @@ def check_for_error(response):
 
 import json
 import requests
-import os
 import gspread
 import pandas as pd
 import re
 
-
-from google.auth import default
 from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
 
@@ -144,7 +129,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
-
     # Autenticación y lectura de Google Sheets
     json_key = '''
     {
@@ -169,9 +153,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     worksheet = spreadsheet.worksheet(sheet_name)
     data = worksheet.get_all_values()
     dataframe = pd.DataFrame(data[1:], columns=data[0])
-
     num_rows = dataframe.shape[0]
-
     for index, row in dataframe.iterrows():
         try:
             domain = row[column_name]
@@ -179,7 +161,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             text = process_url_data(links_obtenidos)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
-
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks)
                     num_tokens = num_tokens_consumed_by_embedding_request(text_chunks)
@@ -202,7 +183,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             error_message = str(e)
             dataframe.at[index, 'QA'] = error_message
             print(f"Error processing row {index}: {error_message}")
-
         # Actualizar la barra de progreso
         progress_bar.progress((index + 1) / num_rows)
 

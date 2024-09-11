@@ -4,8 +4,6 @@ import sys
 sys.path.append(os.path.abspath('../enrichment_scripts'))
 from enrichment_scripts.ai_qa import *
 
-openai_api_key = st.secrets["OPENAI_API_KEY"]
-
 st.title("QA with Searching Keyword")
 
 spreadsheet_url = st.text_input("URL de Google Sheets", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
