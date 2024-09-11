@@ -116,9 +116,12 @@ def split_text(text):
 
 # Main function to process the data from the Google Sheet and populate results
 def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar):
-    cost_per_prompt_token = 0.000015 / 1000
-    cost_per_completion_token = 0.0006 / 1000
-    total_cost = 0
+    # Define the cost per token rates
+    cost_per_prompt_token = 0.000015  # 0.015 cents per 1000 tokens
+    cost_per_completion_token = 0.0006  # 0.6 cents per 1000 tokens
+    total_cost = 0  # Initialize total cost
+
+    # Google Sheets credentials and data fetching
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     credentials = Credentials.from_service_account_info(key_dict, scopes=scope)
     client = gspread.authorize(credentials)
@@ -144,9 +147,14 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question)
                         dataframe.at[index, 'result'] = response
+                        
+                        # Calculate costs from callback data
                         prompt_cost = cb.prompt_tokens * cost_per_prompt_token
                         output_cost = cb.completion_tokens * cost_per_completion_token
-                        total_cost += (prompt_cost + output_cost)
+                        row_cost = prompt_cost + output_cost
+                        
+                        # Add the row cost to the total cost
+                        total_cost += row_cost
                 else:
                     dataframe.at[index, 'result'] = ""
             else:
@@ -154,13 +162,17 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
         except Exception as e:
             dataframe.at[index, 'QA'] = str(e)
 
+        # Update the progress bar for each row processed
         progress_bar.progress((index + 1) / num_rows)
 
+    # Process the final dataframe columns
     df_final = dataframe
     df_final['QA'], df_final['Reason'] = zip(*df_final['result'].apply(split_text))
     df_final = df_final[[column_name, 'QA', 'Reason', 'result']]
 
+    # Clear the worksheet and update with the new dataframe
     worksheet.clear()
     set_with_dataframe(worksheet, df_final, include_index=False, resize=True, allow_formulas=True)
 
     return df_final, total_cost
+
