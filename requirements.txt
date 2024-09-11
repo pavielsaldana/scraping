@@ -1,3 +1,6 @@
+langchain==0.0.349
+faiss-cpu
+openlimit==0.3.0
 google-auth
 gspread
 gspread_dataframe
@@ -7,6 +10,4 @@ streamlit
 tqdm
 tldextract
 beautifulsoup4
-langchain==0.0.349
-openlimit==0.3.0
 zenrows

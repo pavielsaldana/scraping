@@ -167,7 +167,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                     llm_question = prompt
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question)
-                        st.write("vectorstore:"+str(vectorstore))
                         error = check_for_error(response)
                         dataframe.at[index, 'Error'] = error
                         prompt_cost = cb.prompt_tokens * cost_per_prompt_token
