@@ -90,15 +90,23 @@ def split_text(text):
     global error_message
     if text == error_message:
         return error_message, None
-    if pd.isna(text) or not text:
+    if pd.isna(text) or not text.strip():
         return None, None
+
     print("Text to split:", text)  # Debugging step
-    parts = re.split(r'\. |, ', text, 1)
+    
+    # Broaden the splitting pattern to include more delimiters
+    parts = re.split(r'[.!?,;:]\s+', text, 1)
+    
     if len(parts) == 0:
         return None, None
-    QA = parts[0].split()[0] if len(parts) > 0 else None
+    
+    # Extract the first part as the QA (question/answer) and the second as the reason
+    QA = parts[0] if len(parts) > 0 else None
     reason = parts[1] if len(parts) > 1 else None
+    
     return QA, reason
+
 
 def format_keywords(input_string):
     keywords_list = [keyword.strip() for keyword in input_string.split(",")]
