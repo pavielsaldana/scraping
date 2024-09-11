@@ -27,6 +27,8 @@ error_message = "Error 422"
 # API keys setup
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
+key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
+key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 serper_api = st.text_input("Seleccione un API de Serper", "689a38f1e3cd679dbce702437c376783b5a24c85")
 
 # Function to fetch organic links using Serper API
