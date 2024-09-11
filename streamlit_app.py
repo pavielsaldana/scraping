@@ -1,7 +1,8 @@
 import os
 import streamlit as st
-os.system('playwright install')
-os.system('playwright install-deps')
+
+if not os.path.exists("/home/appuser/.cache/ms-playwright"):
+    os.system("playwright install")
 
 welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
                        title="Welcome",)
