@@ -16,8 +16,8 @@
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y < packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit playwright; playwright install --with-deps chromium; echo '✅ Packages installed and Requirements met'",
-  "postCreateCommand": "PLAYWRIGHT_BROWSERS_PATH=/home/appuser/.cache/ms-playwright playwright install --with-deps chromium && echo '✅ Playwright dependencies and browsers installed'; playwright show-browsers",
+  "updateContentCommand": "pip3 install --user -r requirements.txt; pip3 install --user streamlit playwright; playwright install chromium; echo '✅ Packages installed and Requirements met'",
+  "postCreateCommand": "playwright install chromium && echo '✅ Playwright dependencies and browsers installed'",
   "postAttachCommand": {
     "server": "streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
