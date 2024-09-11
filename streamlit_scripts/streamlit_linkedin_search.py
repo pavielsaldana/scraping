@@ -92,7 +92,6 @@ if linkedin_search_option != "Select one LinkedIn search script":
                         script_type = 'company_search_company_name'
                         first_name_column_name = None
                         last_name_column_name = None
-                        company_name_column_name = None
                         query_column_name = None
                         dataframe_result = linkedin_search_scripts(csrf_token, dataframe_input, script_type, first_name_column_name, last_name_column_name, company_name_column_name, query_column_name, company_column_name, cookies_dict)
                     write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
