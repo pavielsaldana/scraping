@@ -1,6 +1,5 @@
 import gspread
 import pandas as pd
-import streamlit as st
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
 from playwright.async_api import async_playwright

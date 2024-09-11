@@ -1,9 +1,7 @@
 import streamlit as st
 import http.client
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 openai_api_key = st.secrets["OPENAI_API_KEY"]
 zenrowsApiKey = '56157ea4b37129fd19ea02fa07291069a0378c19'
 serper_api= '81ead61f8203d7445b4c38d383d58422eb6963ae'#@param {type:"string"}
