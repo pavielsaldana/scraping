@@ -1,4 +1,3 @@
-import asyncio
 import os
 import streamlit as st
 import sys
@@ -58,7 +57,8 @@ if owler_revenue_option != "Select one Owler revenue script":
                     if owler_revenue_option == "Search Owler URLs & Scraping Owler URLs":
                         search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe_input, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result)
                     if owler_revenue_option == "Scraping Owler URLs":
-                        search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe_input, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result)
+                        st.write("Not implemented yet!")
+                        #search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe_input, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result)
                     st.success("Scraping completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
