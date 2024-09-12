@@ -17,3 +17,4 @@ zenrows
 faiss-cpu
 langchain==0.0.349
 openai
+tiktoken
