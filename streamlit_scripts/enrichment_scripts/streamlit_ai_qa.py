@@ -100,12 +100,8 @@ def get_text_chunks(text):
 def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     st.write(embeddings)
-    st..write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
+    st.write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-
-input_text = "The meaning of life is 42"
-vector = embeddings.embed_query("hello")
-print(vector[:3])
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
     docs = vectorstore.similarity_search(search_question)
