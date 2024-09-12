@@ -16,5 +16,5 @@ webdriver-manager
 zenrows
 faiss-cpu
 langchain==0.0.349
-openai
+openai=0.28.1
 tiktoken

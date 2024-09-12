@@ -22,6 +22,11 @@ zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
+#faiss-cpu
+#langchain==0.0.349
+#openai==1.45.0
+#tiktoken==0.7.0
+
 def buscar_enlaces_organicos(keywords, row, serper_api):
     conn = http.client.HTTPSConnection("google.serper.dev")
     payload = json.dumps({
