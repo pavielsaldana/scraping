@@ -173,8 +173,8 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             text = process_url_data(links_obtenidos)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
-                st.write(type(text_chunks))
-                if len(text_chunks) > 0:
+                if text_chunks:
+                    st.write("DENTRO DE TEXT_CHUNKS")
                     vectorstore = get_vectors(text_chunks)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
