@@ -9,7 +9,8 @@ OPENAI_API_KEY= st.secrets["OPENAI_API_KEY"]["value"]
 openai.api_key = OPENAI_API_KEY
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 serper_api= '81ead61f8203d7445b4c38d383d58422eb6963ae'
-
+key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
+key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 def buscar_enlaces_organicos(keywords, row):
     conn = http.client.HTTPSConnection("google.serper.dev")
@@ -166,24 +167,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
-
-    # Autenticación y lectura de Google Sheets
-    json_key = '''
-    {
-    "type": "service_account",
-    "project_id": "invertible-now-393117",
-    "private_key_id": "7c8140d98b3d44bd4b51d752bc8b6a685a6977c5",
-    "private_key": "-----BEGIN PRIVATE KEY-----\\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCnfif/GUDnQBPa\\ndZyL7ZHRQqFP0vFKsj+egkH5tp8osXLEQmZSi5/2w6ffDQnLvL94hKMvmgoDi+a+\\noZK8He6g43C7W8vTjbq8kdeYbJCrDjSYVTltgBHog6oME1l5yvVbCEhIEwEK/KGz\\n5Skn9Kgw4fnejI1aWKbjZ45p3AdKPPU7prvG5Yl43jav1mBj4mSyHloFepsaVBcF\\nCwq975BvCxGf0SjIP4xWzQy8V4jUmP3WZzNeLwMXnLv9Wuv0ITLRJi+gJN5Nxm2+\\n9r4drri7WOPICjPJ1Rv7N3fjmdagVvAXVTJTGJUJiUJu4jErJs59ptZebw6aPyJS\\nuxK9qEaNAgMBAAECggEAC76laFZpfi24lquDmC5G+ND+xb2pbM719hP1M2DyZSSY\\nQxnS2fvvchrDJTlhU/d+x6EpXjejdx8yxXBH/UfuCTsZlxG3R7TbAMkLQKVwOYZr\\n+riTJ9IAr3i4DlO3BPrN3J3Gj8NBYfdYEWjCy4n010SpREk/yjOINE75JgQnQLXL\\ncv2KzMPqTMiy5jgkP2H/CXXXRMktNsySqSc50vS98JW+w+bjZIc7tiC/mbjQtQQR\\n9RS5pTM480LJiOLXPiwGmr/LESYySqKBnZo23G+ixabf9Vaq92t3pXdf3XhNwvyq\\nTKHiqGSIr7vVJhHPJO4oLH/u2c7szn+n9Jsr/fi/AwKBgQDdm+M6FLplwK/kde8q\\njng1LHj/d20Pi2zb0M2ORe6XBPGiLabV9R8R2iCX7ByONYzJ0GXY2fli/vb2JhOh\\nPNK8/cMDkiXECCl2NUO/yKVlvZvXHRHn8Ihd+gMSBntn2iAACc6+AAP5do8blNT2\\nLFKU64VSmpBVHPRUbGB5RJxz7wKBgQDBfFWxTtwBK5PO/F90eXUUrIIUInVh5Bcy\\nauwu/542T71jbtecTnRU3WkYHoDBa4DpAYngxg/nUXSC+7ezY16SanEUxcIUSvjl\\nmCL+aEiDBasiNuXlZj3IAfvA7Mp4SK8GfG1JYxXicio0j6FCTrkzi7f8m3eiCond\\n5qAWjd4BQwKBgCeE0B2gaqkQlo1QNqlJJMieuKkd+/XksDH252EyuVx3Bjwclf7b\\nqoG9e0h8U49Mn2Gx5yenn2B3BUVZ/vAm75HCUw+E9XUi23n3/6/osQ4WpP7UcUgC\\nTd8sYXXKcCFR9ZjsJtEdIZhP+y84+E06FDP4WBsl8w0qj6uqc/3MLXZDAoGAbd7L\\nzm6ocaWsPmqDTeG2gXHgP8y9eUQLhB7BVYLj9ZVcRz1nBCRs3NAJ4J9Zn/wK7MVp\\n5RCzcTiI/+QukZhI2L3GzvPpXJqiMcYtgOf43SX34urnq1del9fAfPI5mwozEWzQ\\npk6026zWmJhDCyMm+cVKShCCY6q2VSKkH4qZ2X8CgYBcxwtbeACxAKNWntG1kGub\\nJqLci+nalkQJw2FPEvrv4ygq/5Z/dY5MfyEB80euU06pyr1nKuxrs3+Nc6YhWHDc\\n/iCMzxrL1I2Ops7pleeS4yvJPk5xgVC8DAguE2aoGr0CfVvoWa/IkDT9L3WiGKhQ\\nNdKjgHIks4SzAHJL/ReT0g==\\n-----END PRIVATE KEY-----\\n",
-    "client_email": "kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com",
-    "client_id": "115925417558125099001",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/kalungi-google-colab%40invertible-now-393117.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com"
-    }
-    '''
-    key_dict = json.loads(json_key)
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     credentials = Credentials.from_service_account_info(key_dict, scopes=scope)
     client = gspread.authorize(credentials)
@@ -193,7 +176,8 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     dataframe = pd.DataFrame(data[1:], columns=data[0])
 
     num_rows = dataframe.shape[0]
-
+    if 'result' not in dataframe.columns:
+        dataframe['result'] = ""  # Initialize 'result' column if it doesn't exist
     for index, row in dataframe.iterrows():
         try:
             domain = row[column_name]
@@ -214,7 +198,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                         output_cost = cb.completion_tokens * cost_per_completion_token
                         total_cost = prompt_cost + output_cost
                         totalcost += total_cost
-                        dataframe.at[index, 'result'] = response
+                        dataframe.at[index, 'result'] = response if response else "" 
                 else:
                     dataframe.at[index, 'result'] = ""
             else:
@@ -227,7 +211,14 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
         # Actualizar la barra de progreso
         progress_bar.progress((index + 1) / num_rows)
 
+    # Final dataframe processing
     df_final = dataframe
+    # Check if 'result' column exists before trying to split it
+    if 'result' in df_final.columns:
+        df_final['QA'], df_final['Reason'] = zip(*df_final['result'].apply(split_text))
+    else:
+        raise KeyError("'result' column not found in df_final")
+    df_final = df_final[[column_name, 'QA', 'Reason', 'result']]
     df_final['QA'], df_final['Reason'] = zip(*df_final['result'].apply(split_text))
     df_final = df_final[[column_name, 'QA', 'Reason', 'result']]
 
