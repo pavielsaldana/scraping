@@ -170,7 +170,11 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
         try:
             domain = row[column_name]
             links_obtenidos = buscar_enlaces_organicos(formatted_keywords, domain, serper_api)
+            st.write("LINK OBTENIDOS")
+            st.write(links_obtenidos)
             text = process_url_data(links_obtenidos)
+            st.write("TEXT")
+            st.write(text)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
@@ -179,6 +183,8 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                     llm_question = prompt
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question)
+                        st.write("CHATGPT RESPONSE")
+                        st.write(response)
                         error = check_for_error(response)
                         dataframe.at[index, 'Error'] = error
                         prompt_cost = cb.prompt_tokens * cost_per_prompt_token
