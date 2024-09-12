@@ -1,10 +1,7 @@
 import http.client
-import os
-import openai
 import streamlit as st
 
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]["value"]
-openai.api_key = OPENAI_API_KEY
+openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 serper_api= '81ead61f8203d7445b4c38d383d58422eb6963ae'
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
@@ -96,7 +93,6 @@ def check_for_error(response):
 
 import json
 import requests
-import os
 import gspread
 import pandas as pd
 import re
@@ -106,9 +102,7 @@ from bs4 import BeautifulSoup
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-from langchain.chains import ConversationalRetrievalChain
 from langchain.chains.question_answering import load_qa_chain
-from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
@@ -117,7 +111,7 @@ import streamlit as st
 import pandas as pd
 from google.oauth2.service_account import Credentials
 
-def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar):
+def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar, openai_api_key):
     error_message = "Error 422"
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
@@ -146,7 +140,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:  # No error
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks, OPENAI_API_KEY)
+                    vectorstore = get_vectors(text_chunks, openai_api_key)
                     
                     # Define search and LLM questions
                     search_question = "Chemical, Shipping, delivery"

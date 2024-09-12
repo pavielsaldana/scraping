@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-import openai
 import sys
 sys.path.append(os.path.abspath('../enrichment_scripts'))
 from enrichment_scripts.ai_qa import *
@@ -8,8 +7,7 @@ from enrichment_scripts.ai_qa import *
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]["value"]
-openai.api_key = OPENAI_API_KEY
+openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 
 st.title("QA with Searching Keyword")
@@ -34,7 +32,7 @@ if st.button("Iniciar procesamiento"):
         with st.spinner("Running the scraper. This could take a few minutes depending on the list size..."):
             try:
                 progress_bar = st.progress(0)
-                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar)
+                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar, openai_api_key)
                 st.success("Scraping completed!")
                 st.dataframe(result)
                 st.write(f"El costo total fue: ${totalcost:.6f}")
