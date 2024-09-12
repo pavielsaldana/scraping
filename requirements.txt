@@ -13,3 +13,4 @@ streamlit_lottie
 zenrows
 selenium
 selenium-stealth
+webdriver-manager

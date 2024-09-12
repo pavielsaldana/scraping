@@ -25,7 +25,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium_stealth import stealth
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result):
     def extract_revenue_method1(html):
@@ -67,7 +67,7 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
         return tldextract.extract(text).registered_domain
       except Exception:
         return None
-    service = Service(executable_path=r'/usr/bin/chromedriver')
+    service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
