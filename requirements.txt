@@ -1,3 +1,4 @@
+beautifulsoup4
 numpy
 pandas
 requests
@@ -9,3 +10,6 @@ gspread_dataframe
 playwright
 streamlit
 streamlit_lottie
+zenrows
+selenium
+selenium-stealth
