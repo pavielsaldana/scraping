@@ -111,7 +111,7 @@ def get_vectors(text_chunks, openai_api_key):
         vector_store = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
         return vector_store
     except Exception as e:
-        print(f"An error occurred: {e}")
+        st.write(f"An error occurred: {e}")
         return None
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
@@ -163,15 +163,9 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
         try:
             domain = row[column_name]
             links_obtenidos = buscar_enlaces_organicos(formatted_keywords, domain, serper_api)
-            st.write("LINK_OBTENIDOS")
-            st.write(links_obtenidos)
             text = process_url_data(links_obtenidos)
-            st.write("TEXT")
-            st.write(text)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
-                st.write("TEXT_CHUNKS")
-                st.write(text_chunks)
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks, openai_api_key)
                     st.write("vectorstore")
