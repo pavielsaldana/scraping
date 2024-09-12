@@ -8,6 +8,7 @@ openai
 openlimit
 playwright
 python-dotenv
+setuptools
 streamlit
 streamlit_lottie
 tqdm
