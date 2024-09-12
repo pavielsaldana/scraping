@@ -5,7 +5,7 @@ import requests
 import gspread
 import pandas as pd
 import re
-import openai
+#import openai
 
 from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
@@ -22,7 +22,7 @@ openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
-openai.api_key = openai_api_key
+#openai.api_key = openai_api_key
 
 def buscar_enlaces_organicos(keywords, row, serper_api):
     conn = http.client.HTTPSConnection("google.serper.dev")
