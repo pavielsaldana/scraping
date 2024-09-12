@@ -5,9 +5,6 @@ import requests
 import gspread
 import pandas as pd
 import re
-import openai
-
-from dotenv import load_dotenv
 
 from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
@@ -20,12 +17,10 @@ from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
 from google.oauth2.service_account import Credentials
 
-load_dotenv()
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
-openai.api_key = OPENAI_API_KEY
 
 def buscar_enlaces_organicos(keywords, row, serper_api):
     conn = http.client.HTTPSConnection("google.serper.dev")
