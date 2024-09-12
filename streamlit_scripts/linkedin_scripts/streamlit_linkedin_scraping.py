@@ -44,14 +44,10 @@ if linkedin_scraping_option == "Sales Navigator lead search export":
     sheet_name = st.text_input("Sheet name (Name of the sheet where the LinkedIn profile links are located)", key="sheet_name")
     column_name = st.text_input("Column name (Name of the column where the LinkedIn profile links are located)", key="column_name")
 if linkedin_scraping_option == "Sales Navigator account export":
-    st.write("LinkedIn authentication cookie.")
-    li_at = st.text_input("li_at", "")
-    st.write("URL of the spreadsheet where the Sales Navigator links are located.")
-    spreadsheet_url = st.text_input("Spreadsheet URL", key="spreadsheet_url")    
-    st.write("Name of the sheet where the Sales Navigator links are located.")
-    sheet_name = st.text_input("Sheet name", key="sheet_name")
-    st.write("Name of the column where the Sales Navigator links are located.")
-    column_name = st.text_input("Column name", key="column_name")
+    li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
+    spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where the LinkedIn company links are located)", key="spreadsheet_url")
+    sheet_name = st.text_input("Sheet name (Name of the sheet where the LinkedIn profile links are located)", key="sheet_name")
+    column_name = st.text_input("Column name (Name of the column where the LinkedIn profile links are located)", key="column_name")
 if linkedin_scraping_option == "LinkedIn account scrape":
     li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where the LinkedIn company links are located)", key="spreadsheet_url")    
