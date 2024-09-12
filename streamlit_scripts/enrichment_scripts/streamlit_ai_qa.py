@@ -99,12 +99,20 @@ def process_url_data(urls):
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
-
-def get_vectors(text_chunks):
-    oai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
-    st.write("get_vector function openai_api_key: "+oai_api_key)
-    embeddings = OpenAIEmbeddings(openai_api_key=oai_api_key)
+'''
+def get_vectors(text_chunks, openai_api_key):
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+'''
+    
+def get_vectors(text_chunks, openai_api_key):
+    try:
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+        vector_store = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+        return vector_store
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
     docs = vectorstore.similarity_search(search_question)
@@ -165,7 +173,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 st.write("TEXT_CHUNKS")
                 st.write(text_chunks)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks)
+                    vectorstore = get_vectors(text_chunks, openai_api_key)
                     st.write("vectorstore")
                     st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
