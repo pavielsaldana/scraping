@@ -99,6 +99,8 @@ def get_text_chunks(text):
 
 def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    st.write("FROM FUNCTION")
+    st.write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
