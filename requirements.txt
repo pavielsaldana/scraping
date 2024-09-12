@@ -20,3 +20,4 @@ openai==0.28.1
 tiktoken
 matplotlib
 plotly
+scipy
