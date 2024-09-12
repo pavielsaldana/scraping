@@ -67,7 +67,7 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
         return tldextract.extract(text).registered_domain
       except Exception:
         return None
-    service = Service(ChromeDriverManager().install())
+    service = Service("/usr/bin/chromium")
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
@@ -76,7 +76,14 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(service=service, options=options)
-
+    stealth(driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+            )
     driver.get("https://www.google.com/?hl=en")
     time.sleep(5)
     try:
