@@ -1,13 +1,11 @@
-import os
-import sys
-sys.path.append(os.path.abspath('../scripts/helper_scripts'))
-from scripts.helper_scripts import *
-
 import calendar
+import os
 import pandas as pd
 import re
 import requests
 import sys
+sys.path.append(os.path.abspath('../scripts/helper_scripts'))
+from scripts.helper_scripts import *
 import time
 import tldextract
 import urllib.parse
