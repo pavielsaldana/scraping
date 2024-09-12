@@ -34,7 +34,7 @@ if st.button("Iniciar procesamiento"):
         with st.spinner("Running the scraper. This could take a few minutes depending on the list size..."):
             try:
                 progress_bar = st.progress(0)
-                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar, )
+                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar)
                 st.success("Scraping completed!")
                 st.dataframe(result)
                 st.write(f"El costo total fue: ${totalcost:.6f}")

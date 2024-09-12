@@ -7,6 +7,8 @@ OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]["value"]
 openai.api_key = OPENAI_API_KEY
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 serper_api= '81ead61f8203d7445b4c38d383d58422eb6963ae'
+key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
+key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 def buscar_enlaces_organicos(keywords, row):
     conn = http.client.HTTPSConnection("google.serper.dev")
@@ -118,7 +120,7 @@ from google.oauth2.service_account import Credentials
 
 error_message = "Error 422"
 
-def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar, key_dict):
+def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar):
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
