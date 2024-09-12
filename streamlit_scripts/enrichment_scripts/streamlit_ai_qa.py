@@ -10,8 +10,8 @@ from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
-#from langchain.vectorstores import FAISS
-from langchain_community.vectorstores import FAISS
+from langchain.vectorstores import FAISS
+#from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
