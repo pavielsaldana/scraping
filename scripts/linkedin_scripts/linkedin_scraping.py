@@ -1,7 +1,7 @@
 import os
 import sys
-sys.path.append(os.path.abspath('../helper_scripts'))
-from helper_scripts.helper_scripts import *
+sys.path.append(os.path.abspath('../scripts/helper_scripts'))
+from scripts.helper_scripts import *
 
 import calendar
 import pandas as pd

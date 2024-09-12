@@ -6,8 +6,8 @@ import pandas as pd
 import random
 import requests
 import sys
-sys.path.append(os.path.abspath('../helper_scripts'))
-from helper_scripts.helper_scripts import *
+sys.path.append(os.path.abspath('../scripts/helper_scripts'))
+from scripts.helper_scripts import *
 import time
 import uuid
 from datetime import datetime, timezone

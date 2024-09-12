@@ -2,10 +2,10 @@ import asyncio
 import os
 import streamlit as st
 import sys
-sys.path.append(os.path.abspath('../helper_scripts'))
-from helper_scripts.helper_scripts import *
-sys.path.append(os.path.abspath('../linkedin_scripts'))
-from linkedin_scripts.linkedin_outreach import *
+sys.path.append(os.path.abspath('../scripts/helper_scripts'))
+from scripts.helper_scripts import *
+sys.path.append(os.path.abspath('../scripts/linkedin_scripts'))
+from scripts.linkedin_scripts.linkedin_outreach import *
 
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
