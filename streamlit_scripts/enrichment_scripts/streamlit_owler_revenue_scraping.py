@@ -57,8 +57,8 @@ if owler_revenue_option != "Select one Owler revenue script":
                     if owler_revenue_option == "Search Owler URLs & Scraping Owler URLs":
                         dataframe_search_results = search_owler_urls(OWLER_PC_cookie, dataframe_input, column_name)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_search_results, key_dict)
-                        dataframe_results = scraping_owler_urls(dataframe_search_results, column_name, zenrowsApiKey, "Owler URL", spreadsheet_url, sheet_name_result, key_dict)
-                        write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_search_results, key_dict)
+                        dataframe_results = scraping_owler_urls(dataframe_search_results, column_name, zenrowsApiKey, "Owler URL")
+                        write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
                     if owler_revenue_option == "Scraping Owler URLs":
                         dataframe_results = scraping_owler_urls(dataframe_input, domainColumnName, zenrowsApiKey, owlerColumnName, spreadsheet_url, sheetNameResult, key_dict)
                         write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_search_results, key_dict)

@@ -130,11 +130,8 @@ def search_owler_urls(OWLER_PC_cookie, dataframe, column_name):
                 return null;
             }
         """, host_element)
-
         if button is not None:
             driver.execute_script("arguments[0].click();", button)
-        else:
-            print("Accept-all button not found. Proceeding without clicking.")
     except Exception as e:
         print(f"Error while trying to click the accept-all button: {e}")
     time.sleep(5)
@@ -162,7 +159,7 @@ def search_owler_urls(OWLER_PC_cookie, dataframe, column_name):
             continue
     return dataframe_search_results    
 
-def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKey, owlerColumnName, spreadsheet_url, sheet_name_result, key_dict):
+def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKey, owlerColumnName):
     dataframe_search_results.drop_duplicates(subset=[domainColumnName], inplace=True)
     dataframe_scrape_results = pd.DataFrame(columns=['Owler URL', 'Redirected URL' ,'Revenue range', 'Revenue 1', 'Revenue 2', 'Owler website', 'Owler domain'])
     client = ZenRowsClient(zenrowsApiKey)
