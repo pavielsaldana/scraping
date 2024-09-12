@@ -15,6 +15,8 @@ from scripts.helper_scripts import *
 #openai==0.28.1
 #matplotlib
 #plotly
+#scipy
+#sklearn
 
 OPENAI_API_KEY= st.secrets["OPENAI_API_KEY"]["value"]
 openai.api_key = OPENAI_API_KEY

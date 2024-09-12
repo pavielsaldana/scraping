@@ -21,3 +21,4 @@ tiktoken
 matplotlib
 plotly
 scipy
+sklearn
