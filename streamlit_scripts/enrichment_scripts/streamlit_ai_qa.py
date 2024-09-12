@@ -104,9 +104,9 @@ def get_vectors(text_chunks, OPENAI_API_KEY):
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
-def get_response_from_chain(vectorstore, search_question, llm_question):
+def get_response_from_chain(vectorstore, search_question, llm_question, OPENAI_API_KEY):
     docs = vectorstore.similarity_search(search_question)
-    llm = ChatOpenAI(temperature=0.9, max_tokens= 4000, model="gpt-4o-mini")
+    llm = ChatOpenAI(api_key=OPENAI_API_KEY, temperature=0.9, max_tokens= 4000, model="gpt-4o-mini")
     chain = load_qa_chain(llm, chain_type="stuff")
     return chain.run(input_documents=docs, question=llm_question)
 
@@ -137,7 +137,7 @@ def check_for_error(response):
 
 error_message = "Error 422"
 
-def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, openai_api_key):
+def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, OPENAI_API_KEY):
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
@@ -162,7 +162,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
-                        response = get_response_from_chain(vectorstore, search_question, llm_question)
+                        response = get_response_from_chain(vectorstore, search_question, llm_question, OPENAI_API_KEY)
                         st.write("CHATGPT RESPONSE")
                         st.write(response)
                         error = check_for_error(response)
