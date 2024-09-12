@@ -6,7 +6,6 @@ import gspread
 import pandas as pd
 import re
 import openai
-from dotenv import load_dotenv
 
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
@@ -22,7 +21,6 @@ from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
 from google.oauth2.service_account import Credentials
 
-load_dotenv()
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
@@ -102,10 +100,10 @@ def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks, openai_api_key):
-    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    st.write("FROM FUNCTION")
-    st.write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
+def get_vectors(text_chunks):
+    oai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
+    st.write("get_vector function openai_api_key: "+oai_api_key)
+    embeddings = OpenAIEmbeddings(openai_api_key=oai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
@@ -167,7 +165,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 st.write("TEXT_CHUNKS")
                 st.write(text_chunks)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks, openai_api_key)
+                    vectorstore = get_vectors(text_chunks)
                     st.write("vectorstore")
                     st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
