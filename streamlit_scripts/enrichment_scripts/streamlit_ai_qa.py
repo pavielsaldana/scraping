@@ -5,13 +5,13 @@ import requests
 import gspread
 import pandas as pd
 import re
+import openai
 
 from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-#from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
@@ -22,6 +22,7 @@ openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
+openai.api_key = openai_api_key
 
 def buscar_enlaces_organicos(keywords, row, serper_api):
     conn = http.client.HTTPSConnection("google.serper.dev")
@@ -96,10 +97,8 @@ def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks, openai_api_key):
+def get_vectors(text_chunks):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    st.write(embeddings)
-    st.write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
@@ -155,8 +154,9 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-
-                    vectorstore = get_vectors(text_chunks, openai_api_key)
+                    vectorstore = get_vectors(text_chunks)
+                    st.write("vectorstore")
+                    st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
