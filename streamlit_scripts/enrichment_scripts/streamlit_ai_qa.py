@@ -211,7 +211,7 @@ if st.button("Iniciar procesamiento"):
         with st.spinner("Running the scraper. This could take a few minutes depending on the list size..."):
             try:
                 progress_bar = st.progress(0)
-                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, openai_api_key)
+                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, OPENAI_API_KEY)
                 st.success("Scraping completed!")
                 st.dataframe(result)
                 st.write(f"El costo total fue: ${totalcost:.6f}")
