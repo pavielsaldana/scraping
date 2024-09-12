@@ -109,7 +109,6 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
-from openlimit.utilities import num_tokens_consumed_by_embedding_request
 from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
 
@@ -148,7 +147,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks)
-                    num_tokens = num_tokens_consumed_by_embedding_request(text_chunks)
                     
                     # Define search and LLM questions
                     search_question = "Chemical, Shipping, delivery"
