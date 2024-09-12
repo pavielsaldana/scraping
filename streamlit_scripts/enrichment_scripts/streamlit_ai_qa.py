@@ -18,7 +18,7 @@ from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
 from google.oauth2.service_account import Credentials
 
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]["value"]
+openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
@@ -116,8 +116,7 @@ def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks):
-    openai_api_key = OPENAI_API_KEY
+def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
@@ -154,7 +153,8 @@ def check_for_error(response):
 
 error_message = "Error 422"
 
-def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict):
+def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, openai_api_key):
+    st.write(openai_api_key)
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
@@ -174,8 +174,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-                    st.write("DENTRO DE TEXT_CHUNKS")
-                    vectorstore = get_vectors(text_chunks)
+                    vectorstore = get_vectors(text_chunks, openai_api_key)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
@@ -229,7 +228,7 @@ if st.button("Iniciar procesamiento"):
         with st.spinner("Running the scraper. This could take a few minutes depending on the list size..."):
             try:
                 progress_bar = st.progress(0)
-                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict)
+                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, openai_api_key)
                 st.success("Scraping completed!")
                 st.dataframe(result)
                 st.write(f"El costo total fue: ${totalcost:.6f}")
