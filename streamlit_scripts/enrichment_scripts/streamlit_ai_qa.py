@@ -24,7 +24,7 @@ key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 #faiss-cpu
 #langchain==0.0.349
-#openai==1.45.0
+#openai==0.28.1
 #tiktoken==0.7.0
 
 def buscar_enlaces_organicos(keywords, row, serper_api):
@@ -158,13 +158,10 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks, OPENAI_API_KEY)
-                    st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question, OPENAI_API_KEY)
-                        st.write("CHATGPT RESPONSE")
-                        st.write(response)
                         error = check_for_error(response)
                         dataframe.at[index, 'Error'] = error
                         prompt_cost = cb.prompt_tokens * cost_per_prompt_token
