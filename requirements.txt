@@ -16,3 +16,4 @@ webdriver-manager
 zenrows
 faiss-cpu
 langchain
+langchain_openai
