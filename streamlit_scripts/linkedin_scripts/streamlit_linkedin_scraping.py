@@ -40,14 +40,12 @@ if linkedin_scraping_option != "Select one LinkedIn scraping script":
     st.write("Before executing any script, please ensure that you share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
 if linkedin_scraping_option == "Sales Navigator lead search export":
     st.write("Use LinkedIn Sales Nave as a database and download any search results list from Sales Navigator. Use this when scraping contacts from a LinkedIn Sales Navigator query. It is important to note that you will also have to share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
-    st.write("[Tutorial >](https://www.loom.com/looms/videos)")
     li_at = st.text_input("li_at" (LinkedIn authentication cookie), key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL" (URL of the spreadsheet where the Sales Navigator links are located), key="spreadsheet_url")    
     sheet_name = st.text_input("Sheet name" (Name of the sheet where the Sales Navigator links are located), key="sheet_name")
     column_name = st.text_input("Column name" (Name of the column where the Sales Navigator links are located), key="column_name")
 if linkedin_scraping_option == "Sales Navigator account export":
     st.write("A LinkedIn Sales Navigator account page contains a wealth of information about a company. Use this when scraping companies based on a Sales Navigator query. It is important to note that you will also have to share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
-    st.write("[Tutorial >](https://www.loom.com/looms/videos)")
     li_at = st.text_input("li_at" (LinkedIn authentication cookie), "")
     spreadsheet_url = st.text_input("Spreadsheet URL" (URL of the spreadsheet where the Sales Navigator links are located), key="spreadsheet_url")    
     sheet_name = st.text_input("Sheet name" (Name of the sheet where the Sales Navigator links are located), key="sheet_name")
@@ -62,7 +60,6 @@ if linkedin_scraping_option == "LinkedIn account scrape":
     location_count = st.text_input("Location count (Number of locations to be scraped - choose between 0 and 100)", key="location_count")
 if linkedin_scraping_option == "LinkedIn lead scrape":
     st.write("The LinkedIn lead Scraper is a data extraction tool that gathers all available information from a prospect’s LinkedIn profile page. The profile is the most comprehensive data source for an individual on LinkedIn, and this information can be used to locate contact details. It is important to note that you will also have to share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
-    st.write("[Tutorial >](https://www.loom.com/looms/videos)")
     li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where the LinkedIn profile links are located)", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name (Name of the sheet where the LinkedIn profile links are located)", key="sheet_name")
