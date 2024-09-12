@@ -1,11 +1,15 @@
+beautifulsoup4
+faiss-cpu
 google-auth
 gspread
 gspread_dataframe
+langchain==0.0.349
+openai
+openlimit
 playwright
 python-dotenv
 streamlit
 streamlit_lottie
 tqdm
 tldextract
-beautifulsoup4
 zenrows
