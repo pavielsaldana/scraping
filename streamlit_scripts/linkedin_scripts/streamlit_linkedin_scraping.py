@@ -39,8 +39,7 @@ st.session_state["previous_option"] = linkedin_scraping_option
 if linkedin_scraping_option != "Select one LinkedIn scraping script":
     st.write("Before executing any script, please ensure that you share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
 if linkedin_scraping_option == "Sales Navigator lead search export":
-    st.write("LinkedIn authentication cookie.")
-    li_at = st.text_input("li_at", key="li_at")
+    li_at = st.text_input("li_at" (LinkedIn authentication cookie), key="li_at")
     st.write("URL of the spreadsheet where the Sales Navigator links are located.")
     spreadsheet_url = st.text_input("Spreadsheet URL", key="spreadsheet_url")    
     st.write("Name of the sheet where the Sales Navigator links are located.")
