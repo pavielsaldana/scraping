@@ -173,16 +173,16 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             text = process_url_data(links_obtenidos)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
-                st.write("text_chunks")
-                st.write(text_chunks)
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks)
+                    st.write("vectorstore")
+                    st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question)
-                        #st.write("CHATGPT RESPONSE")
-                        #st.write(response)
+                        st.write("CHATGPT RESPONSE")
+                        st.write(response)
                         error = check_for_error(response)
                         dataframe.at[index, 'Error'] = error
                         prompt_cost = cb.prompt_tokens * cost_per_prompt_token
