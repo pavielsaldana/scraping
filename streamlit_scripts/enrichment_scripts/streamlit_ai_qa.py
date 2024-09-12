@@ -40,7 +40,6 @@ def buscar_enlaces_organicos(keywords, row, serper_api):
     organic_results = data_dict.get('organic', [])
     links = [result['link'].replace("https://", "http://") for result in organic_results if 'link' in result and not result['link'].lower().endswith('.pdf')]
     links.append(f'http://{row}')
-    st.write(links[:4])
     return links[:4]
 
 def get_text_from_url(url):
@@ -216,7 +215,7 @@ st.title("QA with Searching Keyword")
 spreadsheet_url = st.text_input("URL de Google Sheets", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
 sheet_name = st.text_input("Nombre de la hoja", "Test")
 column_name = st.text_input("Nombre de la columna", "domain")
-serper_api = st.text_input("Seleccione un API de Serper", "81ead61f8203d7445b4c38d383d58422eb6963ae")
+serper_api = st.text_input("Seleccione un API de Serper", "091de71c94b24d78f85f38e527c370ae6c2f2f59")
 
 keywords = st.text_area("Introduce las keywords separadas por comas", "Delivery, Shipping, last mile, White Glove, final mile")
 keywords_list = [keyword.strip() for keyword in keywords.split(',')]
