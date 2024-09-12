@@ -55,13 +55,10 @@ if owler_revenue_option != "Select one Owler revenue script":
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
                     if owler_revenue_option == "Search Owler URLs & Scraping Owler URLs":
-                        dataframe_search_results = search_owler_urls(OWLER_PC_cookie, dataframe_input, column_name)
-                        write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_search_results, key_dict)
-                        #dataframe_results = scraping_owler_urls(dataframe_search_results, column_name, zenrowsApiKey, "Owler URL")
-                        #write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
+                        search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe_input, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result)
                     if owler_revenue_option == "Scraping Owler URLs":
-                        dataframe_results = scraping_owler_urls(dataframe_input, domainColumnName, zenrowsApiKey, owlerColumnName, spreadsheet_url, sheetNameResult, key_dict)
-                        write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_search_results, key_dict)
+                        st.write("Not implemented yet!")
+                        #search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe_input, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result)
                     st.success("Scraping completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
