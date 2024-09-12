@@ -97,7 +97,7 @@ def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks):
+def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
@@ -154,7 +154,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks)
+                    vectorstore = get_vectors(text_chunks, openai_api_key)
                     st.write("vectorstore")
                     st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
