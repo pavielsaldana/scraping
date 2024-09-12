@@ -59,8 +59,7 @@ def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
 
-def get_vectors(text_chunks):
-    openai_api_key = OPENAI_API_KEY
+def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
@@ -118,9 +117,8 @@ import streamlit as st
 import pandas as pd
 from google.oauth2.service_account import Credentials
 
-error_message = "Error 422"
-
 def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_API, progress_bar):
+    error_message = "Error 422"
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
@@ -148,7 +146,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:  # No error
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks)
+                    vectorstore = get_vectors(text_chunks, OPENAI_API_KEY)
                     
                     # Define search and LLM questions
                     search_question = "Chemical, Shipping, delivery"
@@ -168,7 +166,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                         total_cost = prompt_cost + output_cost
                         totalcost += total_cost
                 else:
-                    dataframe.at[index, 'result'] = "No text chunks found"
+                    dataframe.at[index, 'result'] = ""
             else:
                 dataframe.at[index, 'result'] = error_message
         except Exception as e:
