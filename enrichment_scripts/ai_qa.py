@@ -60,7 +60,7 @@ def get_text_chunks(text):
     return text_splitter.split_text(text)
 
 def get_vectors(text_chunks):
-    openai_api_key = os.getenv('OPENAI_API_KEY')
+    openai_api_key = OPENAI_API_KEY
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
