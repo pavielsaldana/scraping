@@ -7,8 +7,7 @@ import pandas as pd
 import re
 import openai
 
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+from dotenv import load_dotenv
 
 from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
@@ -21,11 +20,12 @@ from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
 from google.oauth2.service_account import Credentials
 
-openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
+load_dotenv()
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
-openai.api_key = openai_api_key
+openai.api_key = OPENAI_API_KEY
 
 def buscar_enlaces_organicos(keywords, row, serper_api):
     conn = http.client.HTTPSConnection("google.serper.dev")
@@ -99,20 +99,10 @@ def process_url_data(urls):
 def get_text_chunks(text):
     text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)
-'''
-def get_vectors(text_chunks, openai_api_key):
-    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+
+def get_vectors(text_chunks, OPENAI_API_KEY):
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-'''
-    
-def get_vectors(text_chunks, openai_api_key):
-    try:
-        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-        vector_store = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-        return vector_store
-    except Exception as e:
-        st.write(f"An error occurred: {e}")
-        return None
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
     docs = vectorstore.similarity_search(search_question)
@@ -167,9 +157,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
-                    vectorstore = get_vectors(text_chunks, openai_api_key)
-                    st.write("vectorstore")
-                    st.write(vectorstore)
+                    vectorstore = get_vectors(text_chunks, OPENAI_API_KEY)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
