@@ -9,8 +9,10 @@ import re
 from gspread_dataframe import set_with_dataframe
 from bs4 import BeautifulSoup
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+#from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+#from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 from langchain.chat_models import ChatOpenAI
@@ -96,13 +98,14 @@ def get_text_chunks(text):
     return text_splitter.split_text(text)
 
 def get_vectors(text_chunks, openai_api_key):
-    st.write(openai_api_key)
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    st.write("EMBEDDINGS")
     st.write(embeddings)
-    st.write("GET_VECTORS_RETURN")
-    st.write()
+    st..write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+
+input_text = "The meaning of life is 42"
+vector = embeddings.embed_query("hello")
+print(vector[:3])
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
     docs = vectorstore.similarity_search(search_question)
@@ -157,6 +160,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
+
                     vectorstore = get_vectors(text_chunks, openai_api_key)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
