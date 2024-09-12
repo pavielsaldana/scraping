@@ -1,5 +1,6 @@
 import gspread
 import pandas as pd
+import requests
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
 from playwright.async_api import async_playwright
@@ -87,3 +88,15 @@ def retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict):
     except gspread.exceptions.SpreadsheetNotFound:
         print("Incorrect or non-existent spreadsheet URL. Please correct it and try again.")
         return None
+def check_zenrows_usage(api_key):
+    headers = {
+        'X-API-Key': api_key,
+    }
+    try:
+        response = requests.get('https://api.zenrows.com/v1/subscriptions/self/details', headers=headers)
+        response.raise_for_status()
+        response_json = response.json()
+        print("Credits already used: " + str(response_json['usage']))
+        print("Credits already used percentage: " + str(response_json['usage_percent']))
+    except requests.RequestException as e:
+        print(f"Error fetching ZenRows usage details: {e}")

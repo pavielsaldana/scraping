@@ -9,6 +9,7 @@ sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 import time
 import tldextract
+import urllib.parse
 import warnings
 warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -42,8 +43,7 @@ def get_driver():
         ),
         options=options,
     )
-def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result):
-    def extract_revenue_method1(html):
+def extract_revenue_method1(html):
         soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', {'class': 'company-statistics-v2 REVENUE_EXACT CP'})
         if div:
@@ -51,44 +51,47 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
             if revenue_div:
                 return revenue_div.text.replace("Upgrade to Pro to unlock exact revenue data", "")
         return None
-    def extract_revenue_method2(html):
-        try:
-            soup = BeautifulSoup(html, 'html.parser')
-            next_data_div = soup.find('script', {'id': '__NEXT_DATA__'})
-            if next_data_div:
-                summary_section = next_data_div.get_text()
-                try:
-                    data_json = json.loads(summary_section)
-                except json.JSONDecodeError as e:
-                    return None
-                match = re.search(r'estimated annual revenue of ([\d.]+[KkMmBb])', summary_section)
-                if match:
-                    return match.group(1)
-            return None
-        except Exception as e:
-            return None
-    def extract_revenue_method3(html):
+def extract_revenue_method2(html):
+    try:
         soup = BeautifulSoup(html, 'html.parser')
-        next_data_script = soup.find('script', {'id': '__NEXT_DATA__'})
-        if next_data_script:
-            data = json.loads(next_data_script.string, object_hook=lambda d: defaultdict(lambda: None, d))
-            formatted_revenue = data['props']['initialState']['formattedRevenue']
-            if formatted_revenue:
-                return '$'+formatted_revenue
-            else:
-                return formatted_revenue
+        next_data_div = soup.find('script', {'id': '__NEXT_DATA__'})
+        if next_data_div:
+            summary_section = next_data_div.get_text()
+            try:
+                data_json = json.loads(summary_section)
+            except json.JSONDecodeError as e:
+                return None
+            match = re.search(r'estimated annual revenue of ([\d.]+[KkMmBb])', summary_section)
+            if match:
+                return match.group(1)
         return None
-    def extract_website(html):
-        soup = BeautifulSoup(html, 'html.parser')
-        a = soup.find('a', {'class': 'cp-link link primary'})
-        if a:
-            return a['href']
+    except Exception as e:
         return None
-    def extract_domain(text):
-        try:
-            return tldextract.extract(text).registered_domain
-        except Exception:
-            return None
+def extract_revenue_method3(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    next_data_script = soup.find('script', {'id': '__NEXT_DATA__'})
+    if next_data_script:
+        data = json.loads(next_data_script.string, object_hook=lambda d: defaultdict(lambda: None, d))
+        formatted_revenue = data['props']['initialState']['formattedRevenue']
+        if formatted_revenue:
+            return '$'+formatted_revenue
+        else:
+            return formatted_revenue
+    return None
+def extract_website(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    a = soup.find('a', {'class': 'cp-link link primary'})
+    if a:
+        return a['href']
+    return None
+def extract_domain(text):
+    try:
+        return tldextract.extract(text).registered_domain
+    except Exception:
+        return None
+def search_owler_urls(OWLER_PC_cookie, dataframe, column_name):
+    dataframe.drop_duplicates(subset=[column_name], inplace=True)
+    dataframe_search_results = pd.DataFrame(columns=[column_name, 'Owler URL', 'Company name'])
     driver = get_driver()
     stealth(driver,
             languages=["en-US", "en"],
@@ -129,10 +132,7 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
     driver.refresh()
     time.sleep(5)
     driver.get("https://www.owler.com/feed")
-    time.sleep(10)
-    dataframe.drop_duplicates(subset=[column_name], inplace=True)
-    dataframe_search_results = pd.DataFrame(columns=[column_name, 'Owler URL', 'Company name'])
-    dataframe_scrape_results = pd.DataFrame(columns=['Owler URL', 'Redirected URL', 'Revenue range', 'Revenue 1', 'Revenue 2', 'Owler website', 'Owler domain'])
+    time.sleep(10)    
     print("---Search Owler URLs---")
     for url in tqdm(dataframe[column_name]):
         time.sleep(2)
@@ -147,40 +147,40 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
             company_name = a_element.find_element(By.XPATH, './/span[@class="company-name"]').text
             temporal_search_results_dataframe = pd.DataFrame({column_name: [url], 'Owler URL': [owler_url], 'Company name': [company_name]})
             dataframe_search_results = pd.concat([dataframe_search_results, temporal_search_results_dataframe])
-        except Exception as e:
+        except Exception:
             continue
-    write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_search_results, key_dict)
-    print("Data printed!")
+    return dataframe_search_results    
+
+def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKey, owlerColumnName, spreadsheet_url, sheet_name_result, key_dict):
+    dataframe_search_results.drop_duplicates(subset=[domainColumnName], inplace=True)
+    dataframe_scrape_results = pd.DataFrame(columns=['Owler URL', 'Redirected URL' ,'Revenue range', 'Revenue 1', 'Revenue 2', 'Owler website', 'Owler domain'])
     client = ZenRowsClient(zenrowsApiKey)
-    headers = {'X-API-Key': zenrowsApiKey}
-    response = requests.get('https://api.zenrows.com/v1/subscriptions/self/details', headers=headers)
-    response_json = response.json()
     print("Before execution")
-    print("Credits already used: " + str(response_json['usage']))
-    owler_urls = dataframe_search_results['Owler URL'].tolist()
+    check_zenrows_usage(zenrowsApiKey)
+    owler_urls = dataframe_search_results[owlerColumnName].tolist()
     owler_urls = [owler_urls[i] for i in range(len(owler_urls)) if owler_urls[i] not in owler_urls[:i]]
     print("---Scraping Owler URLs---")
     for url_scape in tqdm(owler_urls):
-        params = {"premium_proxy": "true", "js_render": "true"}
+        params = {
+            "premium_proxy": "true",
+            "js_render":"true",
+        }
         response = client.get(url_scape, params=params)
         html_content = response.text
         redirected_url = response.url
+        redirected_url = urllib.parse.unquote(re.search(r"https://api\.zenrows\.com/v1/\?url=(.*)&apikey=", redirected_url).group(1)) if redirected_url and re.search(r"https://api\.zenrows\.com/v1/\?url=(.*)&apikey=", redirected_url) else None
+
         revenue_range = extract_revenue_method1(html_content)
         exact_revenue_1 = extract_revenue_method2(html_content)
         exact_revenue_2 = extract_revenue_method3(html_content)
         owler_website = extract_website(html_content)
         owler_domain = extract_domain(owler_website)
         owler_domain = owler_domain.lower() if owler_domain is not None else None
+
         temporal_scrape_results_dataframe = pd.DataFrame({'Owler URL': [url_scape], 'Redirected URL': [redirected_url], 'Revenue range': [revenue_range], 'Revenue 1': [exact_revenue_1], 'Revenue 2': [exact_revenue_2], 'Owler website': [owler_website], 'Owler domain': [owler_domain]})
         dataframe_scrape_results = pd.concat([dataframe_scrape_results, temporal_scrape_results_dataframe])
-    dataframe_results = dataframe_search_results.merge(dataframe_scrape_results, on='Owler URL')
-    dataframe_results['EQ'] = (dataframe_results[column_name] == dataframe_results['Owler domain'])    
-    response = requests.get(f'https://api.zenrows.com/v1/usage?apikey={zenrowsApiKey}')
-    response_json = response.json()
-    headers = {'X-API-Key': zenrowsApiKey}
-    response = requests.get('https://api.zenrows.com/v1/subscriptions/self/details', headers=headers)
-    response_json = response.json()    
+    dataframe_results = dataframe_search_results.merge(dataframe_scrape_results, left_on=owlerColumnName, right_on='Owler URL')
+    dataframe_results['EQ'] = (dataframe_results[domainColumnName].str.lower() == dataframe_results['Owler domain'].str.lower())
     print("After execution")
-    print("Credits already used: " + str(response_json['usage']))
-    write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
-    print("Data printed!")
+    check_zenrows_usage(zenrowsApiKey)
+    return dataframe_results
