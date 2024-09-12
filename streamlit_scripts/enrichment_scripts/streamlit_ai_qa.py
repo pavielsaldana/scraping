@@ -158,6 +158,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks, OPENAI_API_KEY)
+                    st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
