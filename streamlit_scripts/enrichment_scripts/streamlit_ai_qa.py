@@ -173,10 +173,9 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             text = process_url_data(links_obtenidos)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
-                if text_chunks:
+                st.write(type(text_chunks))
+                if len(text_chunks) > 0:
                     vectorstore = get_vectors(text_chunks)
-                    st.write("vectorstore")
-                    st.write(vectorstore)
                     search_question = "Chemical, Shipping, Delivery"
                     llm_question = prompt
                     with get_openai_callback() as cb:
