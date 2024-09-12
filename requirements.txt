@@ -18,3 +18,4 @@ faiss-cpu
 langchain==0.0.349
 openai==0.28.1
 tiktoken
+matplotlib

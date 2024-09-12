@@ -13,6 +13,8 @@ sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 
 #openai==0.28.1
+#matplotlib
+
 OPENAI_API_KEY= st.secrets["OPENAI_API_KEY"]["value"]
 openai.api_key = OPENAI_API_KEY
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
