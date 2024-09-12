@@ -1,5 +1,4 @@
 import http.client
-import os
 import streamlit as st
 import json
 import requests
@@ -97,11 +96,12 @@ def get_text_chunks(text):
     return text_splitter.split_text(text)
 
 def get_vectors(text_chunks, openai_api_key):
+    st.write(openai_api_key)
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     st.write("EMBEDDINGS")
     st.write(embeddings)
     st.write("GET_VECTORS_RETURN")
-    st.write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
+    st.write()
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
@@ -138,7 +138,6 @@ def check_for_error(response):
 error_message = "Error 422"
 
 def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, openai_api_key):
-    st.write(openai_api_key)
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
