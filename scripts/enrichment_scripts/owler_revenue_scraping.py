@@ -52,14 +52,21 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
                 return revenue_div.text.replace("Upgrade to Pro to unlock exact revenue data", "")
         return None
     def extract_revenue_method2(html):
-        soup = BeautifulSoup(html, 'html.parser')
-        next_data_div = soup.find('script', {'id': '__NEXT_DATA__'})
-        if next_data_div:
-            summary_section = next_data_div.get_text()
-            match = re.search(r'estimated annual revenue of ([\d.]+[KkMmBb])', summary_section)
-            if match:
-                return match.group(1)
-        return None
+        try:
+            soup = BeautifulSoup(html, 'html.parser')
+            next_data_div = soup.find('script', {'id': '__NEXT_DATA__'})
+            if next_data_div:
+                summary_section = next_data_div.get_text()
+                try:
+                    data_json = json.loads(summary_section)
+                except json.JSONDecodeError as e:
+                    return None
+                match = re.search(r'estimated annual revenue of ([\d.]+[KkMmBb])', summary_section)
+                if match:
+                    return match.group(1)
+            return None
+        except Exception as e:
+            return None
     def extract_revenue_method3(html):
         soup = BeautifulSoup(html, 'html.parser')
         next_data_script = soup.find('script', {'id': '__NEXT_DATA__'})
