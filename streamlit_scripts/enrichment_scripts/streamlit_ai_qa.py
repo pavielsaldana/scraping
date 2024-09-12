@@ -6,6 +6,7 @@ import gspread
 import pandas as pd
 import re
 import openai
+from dotenv import load_dotenv
 
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
@@ -21,6 +22,7 @@ from langchain.chat_models import ChatOpenAI
 from zenrows import ZenRowsClient
 from google.oauth2.service_account import Credentials
 
+load_dotenv()
 openai_api_key = st.secrets["OPENAI_API_KEY"]["value"]
 zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
