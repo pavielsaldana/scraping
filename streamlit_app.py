@@ -21,15 +21,18 @@ linkedin_outreach_page = st.Page("streamlit_scripts/linkedin_scripts/streamlit_l
 ai_qa_page = st.Page("streamlit_scripts/enrichment_scripts/streamlit_ai_qa.py",
                                  title = "AI QA",
                                  icon = ":material/checklist_rtl:")
+owler_revenue_page = st.Page("streamlit_scripts/enrichment_scripts/owler_revenue_scraping.py",
+                                 title = "Owler revenue",
+                                 icon = ":material/checklist_rtl:")
 ai_title_cleaning_page = st.Page("streamlit_scripts/data_cleaning_scripts/streamlit_ai_title_cleaning.py",
                                  title = "AI title cleaning",
                                  icon = ":material/face:")
 pg = st.navigation(
     {
         "Welcome": [welcome_page,],
-        "LinkedIn scripts": [linkedin_scraping_page, linkedin_search_page, linkedin_outreach_page],
-        "Enrichment scripts": [ai_qa_page],
-        "Data cleaning": [ai_title_cleaning_page],
+        "LinkedIn scripts": [linkedin_scraping_page, linkedin_search_page, linkedin_outreach_page,],
+        "Enrichment scripts": [ai_qa_page, owler_revenue_page,],
+        "Data cleaning": [ai_title_cleaning_page,],
     }
 )
 
