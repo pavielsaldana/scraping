@@ -82,26 +82,6 @@ def get_text_from_url(url):
     except requests.exceptions.RequestException as e:
         return ""
 
-'''
-def get_text_from_url(url):
-    client = ZenRowsClient(zenrowsApiKey)
-    headers = {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
-    try:
-        response = client.get(url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, 'html.parser')
-            for script_or_style in soup(['script', 'style']):
-                script_or_style.extract()
-            text = soup.get_text()
-            lines = (line.strip() for line in text.splitlines())
-            chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-            return '\n'.join(chunk for chunk in chunks if chunk)
-        else:
-            return f"Error {response.status_code}"
-    except requests.exceptions.RequestException as e:
-        return f"Error de solicitud: {e}"
-'''
-
 def process_url_data(urls):
     combined_text = ""
     for url in urls:
@@ -118,6 +98,10 @@ def get_text_chunks(text):
 
 def get_vectors(text_chunks, openai_api_key):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+    st.write("EMBEDDINGS")
+    st.write(embeddings)
+    st.write("GET_VECTORS_RETURN")
+    st.write(FAISS.from_texts(texts=text_chunks, embedding=embeddings))
     return FAISS.from_texts(texts=text_chunks, embedding=embeddings)
 
 def get_response_from_chain(vectorstore, search_question, llm_question):
