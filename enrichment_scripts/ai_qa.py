@@ -124,47 +124,69 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+
+    # Authentication for Google Sheets API
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     credentials = Credentials.from_service_account_info(key_dict, scopes=scope)
     client = gspread.authorize(credentials)
     spreadsheet = client.open_by_url(spreadsheet_url)
     worksheet = spreadsheet.worksheet(sheet_name)
+    
+    # Extract data from the worksheet
     data = worksheet.get_all_values()
     dataframe = pd.DataFrame(data[1:], columns=data[0])
     num_rows = dataframe.shape[0]
+    
+    # Iterate over rows and process each
     for index, row in dataframe.iterrows():
         try:
             domain = row[column_name]
+            # Fetch links and extract text
             links_obtenidos = buscar_enlaces_organicos(formatted_keywords, domain)
             text = process_url_data(links_obtenidos)
-            if text != error_message:
+            
+            if text != error_message:  # No error
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
                     vectorstore = get_vectors(text_chunks)
                     num_tokens = num_tokens_consumed_by_embedding_request(text_chunks)
+                    
+                    # Define search and LLM questions
                     search_question = "Chemical, Shipping, delivery"
                     llm_question = prompt
+                    
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question)
                         error = check_for_error(response)
+                        
+                        # Update DataFrame with result
                         dataframe.at[index, 'Error'] = error
+                        dataframe.at[index, 'result'] = response
+                        
+                        # Calculate costs
                         prompt_cost = cb.prompt_tokens * cost_per_prompt_token
                         output_cost = cb.completion_tokens * cost_per_completion_token
                         total_cost = prompt_cost + output_cost
                         totalcost += total_cost
-                        dataframe.at[index, 'result'] = response
                 else:
-                    dataframe.at[index, 'result'] = ""
+                    dataframe.at[index, 'result'] = "No text chunks found"
             else:
                 dataframe.at[index, 'result'] = error_message
         except Exception as e:
             error_message = str(e)
             dataframe.at[index, 'QA'] = error_message
-            print(f"Error processing row {index}: {error_message}")
+            st.error(f"Error processing row {index}: {error_message}")
+        
+        # Update progress bar
         progress_bar.progress((index + 1) / num_rows)
+    
+    # Split and organize results
     df_final = dataframe
     df_final['QA'], df_final['Reason'] = zip(*df_final['result'].apply(split_text))
     df_final = df_final[[column_name, 'QA', 'Reason', 'result']]
+    
+    # Update Google Sheet with results
     worksheet.clear()
     set_with_dataframe(worksheet, df_final, include_index=False, resize=True, allow_formulas=True)
+    
     return df_final, totalcost
