@@ -40,7 +40,8 @@ def buscar_enlaces_organicos(keywords, row, serper_api):
     organic_results = data_dict.get('organic', [])
     links = [result['link'].replace("https://", "http://") for result in organic_results if 'link' in result and not result['link'].lower().endswith('.pdf')]
     links.append(f'http://{row}')
-    return links[:4]
+    st.write(links)
+    return links[:3]
 
 def get_text_from_url(url):
     client = ZenRowsClient(zenrowsApiKey)
@@ -173,8 +174,8 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
             #st.write("LINK OBTENIDOS")
             #st.write(links_obtenidos)
             text = process_url_data(links_obtenidos)
-            #st.write("TEXT")
-            #st.write(text)
+            st.write("TEXT")
+            st.write(text)
             if text != error_message:
                 text_chunks = get_text_chunks(text)
                 if text_chunks:
