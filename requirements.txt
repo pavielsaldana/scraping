@@ -15,5 +15,4 @@ tqdm
 webdriver-manager
 zenrows
 faiss-cpu
-langchain
-langchain_openai
+langchain==0.0.349
