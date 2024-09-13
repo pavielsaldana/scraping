@@ -66,3 +66,4 @@ if owler_revenue_option != "Select one Owler revenue script":
             except Exception as e:
                 st.error(f"An error occurred: {e}")
                 st.exception(e)
+                
