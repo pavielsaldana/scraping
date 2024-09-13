@@ -97,9 +97,11 @@ def check_zenrows_usage(api_key, streamlit_execution):
         response = requests.get('https://api.zenrows.com/v1/subscriptions/self/details', headers=headers)
         response.raise_for_status()
         response_json = response.json()
+        #--STREAMLIT--#
         if streamlit_execution:
             st.write("Credits already used: " + str(response_json['usage']))
             st.write("Credits already used percentage: " + str(response_json['usage_percent']))
+        #--STREAMLIT--#
         print("Credits already used: " + str(response_json['usage']))
         print("Credits already used percentage: " + str(response_json['usage_percent']))
     except requests.RequestException as e:        
