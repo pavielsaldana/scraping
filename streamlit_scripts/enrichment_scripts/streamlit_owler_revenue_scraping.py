@@ -10,6 +10,7 @@ zenrowsApiKey = st.secrets["ZENROWS_API_KEY"]["value"]
 OWLER_PC_cookie = st.secrets["OWLER_PC_COOKIE"]["value"]
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
+streamlit_execution = True
 
 st.title("Owler revenue scripts")
 def reset_inputs():
