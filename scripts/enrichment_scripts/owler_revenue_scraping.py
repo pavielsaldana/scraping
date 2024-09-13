@@ -42,6 +42,9 @@ def get_driver():
         ),
         options=options,
     )
+def take_screenshot(driver):
+    screenshot = driver.get_screenshot_as_png()
+    return screenshot
 def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result):
     def extract_revenue_method1(html):
         soup = BeautifulSoup(html, 'html.parser')
@@ -99,7 +102,7 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
             fix_hairline=True,
             )
     driver.get("https://www.google.com/?hl=en")
-    time.sleep(5)    
+    time.sleep(5)   
     try:
         accept_all_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[.//div[text()='Accept all'] or .//span[text()='Accept all']]"))
@@ -114,6 +117,10 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
     first_result = driver.find_element(By.CSS_SELECTOR, 'h3')
     first_result.click()
     time.sleep(5)    
+    
+    screenshot = take_screenshot(driver)
+    st.image(screenshot, caption="Google Screenshot")
+    
     host_element = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "usercentrics-root"))
     )    
