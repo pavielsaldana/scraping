@@ -17,9 +17,8 @@ def reset_inputs():
     st.session_state["sheet_name"] = ""
     st.session_state["column_name"] = ""
     st.session_state["sheet_name_result"] = ""
-    st.session_state["domainColumnName"] = ""
-    st.session_state["owlerColumnName"] = ""
-    st.session_state["sheetNameResult"] = ""
+    st.session_state["domain_column_name"] = ""
+    st.session_state["owler_column_name"] = ""
 if "previous_option" not in st.session_state:
     st.session_state["previous_option"] = "Select one Owler revenue script"
 owler_revenue_option = st.selectbox(
@@ -40,17 +39,17 @@ if owler_revenue_option == "Search Owler URLs & Scraping Owler URLs":
     column_name = st.text_input("Domain column name (Here you should write the column name where the domains are)", key="column_name")
     sheet_name_result = st.text_input("Result sheet name (Here you should write the name of the sheet where your scraped data will be pasted)", key="sheet_name_result")
 if owler_revenue_option == "Scraping Owler URLs":
-    spreadsheetUrl = st.text_input("Spreadsheet URL (Here you should paste the spreadsheet URL which you are going to use)", key="spreadsheetUrl")
-    sheetName = st.text_input("Sheet name (Here you should write the name of the sheet where your data is)", key="sheetName")
-    domainColumnName = st.text_input("Domain column name (Here you should write the column name where the domains are)", key="domainColumnName")
-    owlerColumnName = st.text_input("Owler URL column name (Here you should write the column name where the Owler URLs are.)", key="owlerColumnName")
-    sheetNameResult = st.text_input("Result sheet name (Here you should write the name of the sheet where your scraped data will be pasted)", key="sheetNameResult")
+    spreadsheet_url = st.text_input("Spreadsheet URL (Here you should paste the spreadsheet URL which you are going to use)", key="spreadsheet_url")
+    sheet_name = st.text_input("Sheet name (Here you should write the name of the sheet where your data is)", key="sheet_name")
+    domain_column_name = st.text_input("Domain column name (Here you should write the column name where the domains are)", key="domain_column_name")
+    owler_column_name = st.text_input("Owler URL column name (Here you should write the column name where the Owler URLs are.)", key="owler_column_name")
+    sheet_name_result = st.text_input("Result sheet name (Here you should write the name of the sheet where your scraped data will be pasted)", key="sheet_name_result")
 
 if owler_revenue_option != "Select one Owler revenue script":
     if st.button("Start scraping"):
-        if not spreadsheet_url or spreadsheetUrl:
+        if not spreadsheet_url:
             st.error("Please fill spreadsheet URL.")
-        if spreadsheet_url or spreadsheetUrl:
+        if spreadsheet_url:
             try:
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
@@ -60,8 +59,8 @@ if owler_revenue_option != "Select one Owler revenue script":
                         dataframe_results = scraping_owler_urls(dataframe_search_results, column_name, zenrowsApiKey, "Owler URL")
                         write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
                     if owler_revenue_option == "Scraping Owler URLs":
-                        dataframe_results = scraping_owler_urls(dataframe_input, domainColumnName, zenrowsApiKey, owlerColumnName, spreadsheet_url, sheetNameResult, key_dict)
-                        write_into_spreadsheet(spreadsheetUrl, sheetNameResult, dataframe_search_results, key_dict)
+                        dataframe_results = scraping_owler_urls(dataframe_input, domain_column_name, zenrowsApiKey, owler_column_name, spreadsheet_url, sheet_name_result, key_dict)
+                        write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_search_results, key_dict)
                     st.success("Scraping completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
