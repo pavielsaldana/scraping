@@ -61,7 +61,7 @@ if owler_revenue_option != "Select one Owler revenue script":
                         write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
                     if owler_revenue_option == "Scraping Owler URLs":
                         dataframe_results = scraping_owler_urls(dataframe_input, domainColumnName, zenrowsApiKey, owlerColumnName, spreadsheet_url, sheetNameResult, key_dict)
-                        write_into_spreadsheet(spreadsheetUrl, sheet_name_result, dataframe_search_results, key_dict)
+                        write_into_spreadsheet(spreadsheetUrl, sheetNameResult, dataframe_search_results, key_dict)
                     st.success("Scraping completed!")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
