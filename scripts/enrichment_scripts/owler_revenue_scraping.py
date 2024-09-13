@@ -29,7 +29,6 @@ from selenium_stealth import stealth
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
-@st.cache_resource
 def get_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--disable-gpu")
@@ -37,9 +36,7 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     return webdriver.Chrome(
-        service=Service(
-            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-        ),
+        service=Service(ChromeDriverManager().install()),
         options=options,
     )
 def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result):
