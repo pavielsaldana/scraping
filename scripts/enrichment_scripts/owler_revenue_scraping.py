@@ -29,6 +29,7 @@ from selenium_stealth import stealth
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
+@st.cache_resource
 def get_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--disable-gpu")
@@ -113,23 +114,15 @@ def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column
     first_result = driver.find_element(By.CSS_SELECTOR, 'h3')
     first_result.click()
     time.sleep(5)    
-    try:
-        host_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "usercentrics-root"))
-        )    
-        button = driver.execute_script("""
-            var hostElement = arguments[0];
-            var shadowRoot = hostElement.shadowRoot;
-            if (shadowRoot) {
-                return shadowRoot.querySelector('button[data-testid="uc-accept-all-button"]');
-            } else {
-                return null;
-            }
-        """, host_element)
-        if button is not None:
-            driver.execute_script("arguments[0].click();", button)
-    except Exception as e:
-        print(f"Error while trying to click the accept-all button: {e}")    
+    host_element = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "usercentrics-root"))
+    )    
+    button = driver.execute_script("""
+        var hostElement = arguments[0];
+        var shadowRoot = hostElement.shadowRoot;
+        return shadowRoot.querySelector('button[data-testid="uc-accept-all-button"]');
+    """, host_element)
+    driver.execute_script("arguments[0].click();", button)    
     time.sleep(5)
     cookie = {'name': 'OWLER_PC', 'value': OWLER_PC_cookie}
     driver.add_cookie(cookie)
