@@ -36,7 +36,9 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     return webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()),
+        service=Service(
+            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+        ),
         options=options,
     )
 def search_owler_urls_and_scraping_owler_urls(OWLER_PC_cookie, dataframe, column_name, spreadsheet_url, sheet_name, key_dict, zenrowsApiKey, sheet_name_result):
