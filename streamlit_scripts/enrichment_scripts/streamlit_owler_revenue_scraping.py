@@ -55,12 +55,12 @@ if owler_revenue_option != "Select one Owler revenue script":
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
                     if owler_revenue_option == "Search Owler URLs & Scraping Owler URLs":
-                        dataframe_search_results = search_owler_urls(OWLER_PC_cookie, dataframe_input, column_name)
+                        dataframe_search_results = search_owler_urls(OWLER_PC_cookie, dataframe_input, column_name, streamlit_execution)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_search_results, key_dict)
-                        dataframe_results = scraping_owler_urls(dataframe_search_results, column_name, zenrowsApiKey, "Owler URL")
+                        dataframe_results = scraping_owler_urls(dataframe_search_results, column_name, zenrowsApiKey, "Owler URL", streamlit_execution)
                         write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
                     if owler_revenue_option == "Scraping Owler URLs":
-                        dataframe_results = scraping_owler_urls(dataframe_input, domain_column_name, zenrowsApiKey, owler_column_name)
+                        dataframe_results = scraping_owler_urls(dataframe_input, domain_column_name, zenrowsApiKey, owler_column_name, streamlit_execution)
                         write_into_spreadsheet(spreadsheet_url, sheet_name_result, dataframe_results, key_dict)
                     st.success("Scraping completed!")
             except Exception as e:
