@@ -154,7 +154,7 @@ if linkedin_outreach_option != "Select one LinkedIn outreach script":
             try:
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
-                    JSESSIONID, li_a, csrf_token, cookies_dict = asyncio.run(retrieve_tokens(li_at))
+                    JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
                     if linkedin_outreach_option == "Obtain the current user profile":
                         script_type = "obtain_current_user_profile"
                         dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)

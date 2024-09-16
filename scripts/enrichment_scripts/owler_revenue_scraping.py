@@ -19,30 +19,12 @@ from collections import defaultdict
 from tqdm import tqdm
 from zenrows import ZenRowsClient
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium_stealth import stealth
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
 
-def get_driver():
-    options = webdriver.ChromeOptions()
-    options.add_argument("--disable-gpu")
-    options.add_argument("--headless")
-    options.add_argument("--window-size=1920x1080")
-    options.add_argument("--lang=en-US")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    return webdriver.Chrome(
-        service=Service(
-            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-        ),
-        options=options,
-    )
 def extract_revenue_method1(html):
         soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', {'class': 'company-statistics-v2 REVENUE_EXACT CP'})

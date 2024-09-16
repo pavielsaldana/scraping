@@ -1,10 +1,16 @@
 import gspread
+import json
 import pandas as pd
 import requests
 import streamlit as st
+import time
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
 from playwright.async_api import async_playwright
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 
 def safe_extract(data, *keys):
     try:
@@ -13,6 +19,59 @@ def safe_extract(data, *keys):
         return data
     except (KeyError, IndexError, TypeError):
         return None
+def get_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument("--disable-gpu")
+    options.add_argument("--headless")
+    options.add_argument("--window-size=1920x1080")
+    options.add_argument("--lang=en-US")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    return webdriver.Chrome(
+        service=Service(
+            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+        ),
+        options=options,
+    )
+def retrieve_tokens_selenium(li_at):
+    driver = get_driver()  
+    try:
+        driver.get("https://www.linkedin.com")
+        driver.add_cookie({
+            'name': 'li_at',
+            'value': li_at,
+            'domain': '.linkedin.com'
+        })
+        driver.get("https://www.linkedin.com/sales/home")
+        time.sleep(5)
+        driver.get("https://www.linkedin.com/sales/search/people?query=(filters%3AList((type%3ACURRENT_COMPANY%2Cvalues%3AList((id%3Aurn%253Ali%253Aorganization%253A18875652%2CselectionType%3AINCLUDED)))))")
+        time.sleep(10)
+        logs = driver.get_log('performance')
+        csrf_token = None
+        for entry in logs:
+            log = json.loads(entry['message'])['message']
+            if log['method'] == 'Network.requestWillBeSent':
+                request_url = log['params']['request']['url']
+                if request_url.startswith("https://www.linkedin.com/sales-api/salesApiAccess"):
+                    data_str = json.dumps(log['params']['request'], indent=4)
+                    data = json.loads(data_str)
+                    csrf_token = data['headers'].get('Csrf-Token', None)
+                    break
+        all_cookies = driver.get_cookies()
+        JSESSIONID = None
+        li_a = None
+        for cookie in all_cookies:
+            if cookie['name'] == 'JSESSIONID':
+                JSESSIONID = cookie['value']
+            elif cookie['name'] == 'li_a':
+                li_a = cookie['value']                
+        driver.quit()        
+        return JSESSIONID, li_a, csrf_token, {cookie['name']: cookie['value'] for cookie in all_cookies}    
+    except Exception as e:
+        driver.quit()
+        print(f"An error occurred: {e}")
+        return None, None, None, None
 async def retrieve_tokens(li_at):
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
