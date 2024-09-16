@@ -11,7 +11,7 @@ def check_password():
             if password == PASSWORD:
                 st.session_state["password_correct"] = True
                 st.success("Access granted!")
-                st.experimental_rerun()
+                st.experimental_set_query_params(access="granted")
             else:
                 st.error("Incorrect password")
                 st.session_state["password_correct"] = False
