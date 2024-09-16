@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-
+st.set_page_config(page_title="ABM App", page_icon="https://media.licdn.com/dms/image/v2/C4E0BAQEUNQJN0rf-yQ/company-logo_200_200/company-logo_200_200/0/1630648936722/kalungi_inc_logo?e=2147483647&v=beta&t=4vrP50CSK9jEFI7xtF7DzTlSMZdjmq__F0eG8IJwfN8")
 PASSWORD = st.secrets["APP_PASSWORD"]["value"]
 def check_password():
     password = st.text_input("Enter the password", type="password")
@@ -12,8 +12,7 @@ def check_password():
     return None
 if check_password():
     if not os.path.exists("/home/appuser/.cache/ms-playwright"):
-        os.system("playwright install")
-    st.set_page_config(page_title="ABM App", page_icon="https://media.licdn.com/dms/image/v2/C4E0BAQEUNQJN0rf-yQ/company-logo_200_200/company-logo_200_200/0/1630648936722/kalungi_inc_logo?e=2147483647&v=beta&t=4vrP50CSK9jEFI7xtF7DzTlSMZdjmq__F0eG8IJwfN8")
+        os.system("playwright install")    
     welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
                            title="Welcome",
                            icon=":material/account_circle:")
