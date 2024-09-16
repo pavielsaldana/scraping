@@ -16,11 +16,9 @@ def check_password():
         "Password", type="password", on_change=password_entered, key="password"
     )
     if "password_correct" in st.session_state:
-        st.error("😕 Password incorrect")
+        st.error("Password incorrect")
     return False
 if check_password():
-    if not os.path.exists("/home/appuser/.cache/ms-playwright"):
-        os.system("playwright install")
     welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
                            title="Welcome",
                            icon=":material/account_circle:")

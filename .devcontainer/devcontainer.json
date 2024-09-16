@@ -17,7 +17,6 @@
     }
   },
   "updateContentCommand": "[ -f packages.txt ] && apt-get update && apt-get install -y $(cat packages.txt); [ -f requirements.txt ] && pip3 install -r requirements.txt; pip3 install streamlit",
-  "postCreateCommand": "npx playwright install --skip-browser-download",
   "portsAttributes": {
     "8501": {
       "label": "Application",
