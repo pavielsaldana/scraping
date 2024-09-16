@@ -9,6 +9,7 @@ from gspread_dataframe import set_with_dataframe
 from playwright.async_api import async_playwright
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium_stealth import stealth
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
@@ -36,7 +37,15 @@ def get_driver():
     )
 def retrieve_tokens_selenium(li_at):
     print("Starting token retrieval...")
-    driver = get_driver()  
+    driver = get_driver()
+    stealth(driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+            )
     try:
         print("Navigating to LinkedIn login page...")
         driver.get("https://www.linkedin.com")
