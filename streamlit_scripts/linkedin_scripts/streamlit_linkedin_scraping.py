@@ -97,7 +97,7 @@ if linkedin_scraping_option != "Select one LinkedIn scraping script":
             try:
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
-                    JSESSIONID, li_a, csrf_token, cookies_dict = asyncio.run(retrieve_tokens(li_at))
+                    JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
                     if linkedin_scraping_option == "Sales Navigator lead search export":
                         dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name)
                     if linkedin_scraping_option == "Sales Navigator account export":

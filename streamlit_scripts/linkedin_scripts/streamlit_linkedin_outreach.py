@@ -196,8 +196,7 @@ if linkedin_outreach_option != "Select one LinkedIn outreach script":
                         dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
                     if linkedin_outreach_option == "Send message":
                         script_type = 'send_message_using_vmid'
-                        dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
-                                       
+                        dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)                                       
                     write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     st.success("Scraping completed!")
             except Exception as e:

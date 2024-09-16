@@ -36,37 +36,27 @@ def get_driver():
         options=options,
     )
 def retrieve_tokens_selenium(li_at):
-    print("Starting token retrieval...")
     driver = get_driver()
     stealth(driver,
-            languages=["en-US", "en"],
-            vendor="Google Inc.",
-            platform="Win32",
-            webgl_vendor="Intel Inc.",
-            renderer="Intel Iris OpenGL Engine",
-            fix_hairline=True,
-            )
+        languages=["en-US", "en"],
+        vendor="Google Inc.",
+        platform="Win32",
+        webgl_vendor="Intel Inc.",
+        renderer="Intel Iris OpenGL Engine",
+        fix_hairline=True,
+        )
     try:
-        print("Navigating to LinkedIn login page...")
         driver.get("https://www.linkedin.com")
         time.sleep(2)
-        print("Setting 'li_at' cookie...")
         driver.add_cookie({
             'name': 'li_at',
             'value': li_at,
             'domain': '.linkedin.com'
         })
-        print("'li_at' cookie set successfully.")
-        
-        print("Navigating to LinkedIn Sales home...")
         driver.get("https://www.linkedin.com/sales/home")
         time.sleep(5)
-
-        print("Navigating to LinkedIn sales search page...")
         driver.get("https://www.linkedin.com/sales/search/people?query=(filters%3AList((type%3ACURRENT_COMPANY%2Cvalues%3AList((id%3Aurn%253Ali%253Aorganization%253A18875652%2CselectionType%3AINCLUDED)))))")
         time.sleep(10)
-
-        print("Retrieving performance logs for CSRF token...")
         logs = driver.get_log('performance')
         csrf_token = None
         for entry in logs:
@@ -77,22 +67,12 @@ def retrieve_tokens_selenium(li_at):
                     csrf_token = log['params']['request']['headers'].get('Csrf-Token')
                     print(f"CSRF token found: {csrf_token}")
                     break
-        if not csrf_token:
-            print("CSRF token not found.")
-
-        print("Extracting cookies...")
         all_cookies = driver.get_cookies()
         cookies = {cookie['name']: cookie['value'] for cookie in all_cookies}
         JSESSIONID = cookies.get('JSESSIONID')
         li_a = cookies.get('li_a')
-
-        print(f"JSESSIONID: {JSESSIONID}")
-        print(f"li_a: {li_a}")
-
-        print("Token retrieval completed successfully.")
         driver.quit()
         return JSESSIONID, li_a, csrf_token, cookies
-
     except Exception as e:
         print(f"An error occurred: {e}")
         driver.quit()
