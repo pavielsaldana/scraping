@@ -1,26 +1,36 @@
 import os
+import hmac
 import streamlit as st
+
 st.set_page_config(page_title="ABM App", page_icon="https://media.licdn.com/dms/image/v2/C4E0BAQEUNQJN0rf-yQ/company-logo_200_200/company-logo_200_200/0/1630648936722/kalungi_inc_logo?e=2147483647&v=beta&t=4vrP50CSK9jEFI7xtF7DzTlSMZdjmq__F0eG8IJwfN8")
-PASSWORD = st.secrets["APP_PASSWORD"]["value"]
+
 def check_password():
-    if "password_correct" not in st.session_state:
-        st.session_state["password_correct"] = False
-    if not st.session_state["password_correct"]:
-        password = st.text_input("Enter the password", type="password")
-        if st.button("Submit"):
-            if password == PASSWORD:
-                st.session_state["password_correct"] = True
-                st.success("Access granted!")
-                st.experimental_set_query_params(access="granted")
-            else:
-                st.error("Incorrect password")
-                st.session_state["password_correct"] = False
-        return False
-    else:
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if hmac.compare_digest(st.session_state["password"], st.secrets["APP_PASSWORD"]["value"]):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the password.
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the password is validated.
+    if st.session_state.get("password_correct", False):
         return True
+
+    # Show input for password.
+    st.text_input(
+        "Password", type="password", on_change=password_entered, key="password"
+    )
+    if "password_correct" in st.session_state:
+        st.error("😕 Password incorrect")
+    return False
+
 if check_password():
     if not os.path.exists("/home/appuser/.cache/ms-playwright"):
         os.system("playwright install")
+    
     welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
                            title="Welcome",
                            icon=":material/account_circle:")
@@ -42,6 +52,7 @@ if check_password():
     ai_title_cleaning_page = st.Page("streamlit_scripts/data_cleaning_scripts/streamlit_ai_title_cleaning.py",
                                      title="AI title cleaning",
                                      icon=":material/face:")
+    
     pg = st.navigation(
         {
             "Welcome": [welcome_page,],
@@ -50,8 +61,9 @@ if check_password():
             "Data cleaning": [ai_title_cleaning_page,],
         }
     )
+    
     st.logo("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYXyGNY0mQSyCRUKXrXWI4-O31kspcM0eVLg&s")
     st.sidebar.markdown("Kalungi ABM App [V1.0](https://docs.google.com/document/d/1armsOtBlHntK4YUWpPH3tTLYlo53ZkzyY-yDW_Nu1x8/edit)")
     pg.run()
 else:
-    st.stop()
+    st.stop()  # Don't run the rest of the app if password is incorrect.
