@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 
-PASSWORD = st.secrets["APP_PASSWORD"]
+PASSWORD = st.secrets["APP_PASSWORD"]["value"]
 def check_password():
     password = st.text_input("Enter the password", type="password")
     if password == PASSWORD:
