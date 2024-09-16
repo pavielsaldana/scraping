@@ -9,13 +9,16 @@
       ]
     },
     "vscode": {
-      "settings": {},
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python3"
+      },
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance"
       ]
     }
   },
+  "postStartCommand": "streamlit run streamlit_app.py",
   "updateContentCommand": "[ -f packages.txt ] && apt-get update && apt-get install -y $(cat packages.txt); [ -f requirements.txt ] && pip3 install -r requirements.txt; pip3 install streamlit",
   "portsAttributes": {
     "8501": {
