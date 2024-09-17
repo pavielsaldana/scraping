@@ -99,23 +99,23 @@ if linkedin_scraping_option != "Select one LinkedIn scraping script":
                 if dataframe_input is not None and not dataframe_input.empty:
                     JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
                     if linkedin_scraping_option == "Sales Navigator lead search export":
-                        dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name)
+                        dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
                     if linkedin_scraping_option == "Sales Navigator account export":
-                        dataframe_result = sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name)
+                        dataframe_result = sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn account scrape":
-                        dataframe_result = linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, cookies_dict, location_count)
+                        dataframe_result = linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, cookies_dict, location_count, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn lead scrape":
-                        dataframe_result = linkedin_lead(csrf_token, dataframe_input, column_name, cookies_dict)
+                        dataframe_result = linkedin_lead(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn account activity scrape":
-                        dataframe_result = company_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict)
+                        dataframe_result = company_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn lead activity scrape":
-                        dataframe_result = profile_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict)
+                        dataframe_result = profile_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn post commenters scrape":
-                        dataframe_result = post_commenters_extractor(csrf_token, dataframe_input, column_name, cookies_dict)
+                        dataframe_result = post_commenters_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn job offers scrape":
-                        dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict)
+                        dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
                     if linkedin_scraping_option == "LinkedIn job offer details scrape":
-                        dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict)  
+                        dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)  
                     write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     st.success("Scraping completed!")
             except Exception as e:

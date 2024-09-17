@@ -19,7 +19,8 @@ def linkedin_search_scripts(
     company_name_column_name: int = None, 
     query_column_name: str = None, 
     company_column_name: str = None, 
-    cookies_dict: dict = None, 
+    cookies_dict: dict = None,
+    streamlit_execution: bool = False,
 ) -> None:
     headers = {
         'csrf-token': csrf_token,
@@ -358,6 +359,12 @@ def linkedin_search_scripts(
         return results
     def people_search_first_name_last_name_company_name(dataframe, first_name_column_name, last_name_column_name, company_name_column_name):
         dataframe_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_people_search_first_name_last_name_company_name = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         for index, row in tqdm(dataframe.iterrows(), total=dataframe.shape[0], desc='Processing rows'):
             dataframe_loop = pd.DataFrame()
             keyword_first_name = row[first_name_column_name]
@@ -386,6 +393,11 @@ def linkedin_search_scripts(
             dataframe_loop = pd.DataFrame(selected_vars)
             dataframe_final = pd.concat([dataframe_final, dataframe_loop])
             time.sleep(random.uniform(10, 17))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_people_search_first_name_last_name_company_name.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_conversations_rename_dict = {
             "keyword_first_name": first_name_column_name,
             "keyword_last_name": last_name_column_name,
@@ -403,6 +415,12 @@ def linkedin_search_scripts(
         return dataframe_final
     def people_search_any_query(dataframe, query_column_name):
         dataframe_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_people_search_any_query = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         for index, row in tqdm(dataframe.iterrows(), total=dataframe.shape[0], desc='Processing rows'):
             dataframe_loop = pd.DataFrame()
             keywords = row[query_column_name]
@@ -428,6 +446,11 @@ def linkedin_search_scripts(
             dataframe_loop = pd.DataFrame(selected_vars)
             dataframe_final = pd.concat([dataframe_final, dataframe_loop])
             time.sleep(random.uniform(10, 17))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_people_search_any_query.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_conversations_rename_dict = {
             "keywords": query_column_name,
             "error": "Error",
@@ -443,6 +466,12 @@ def linkedin_search_scripts(
         return dataframe_final
     def company_search_company_name(dataframe, company_column_name):
         dataframe_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_company_search_company_name = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         for index, row in tqdm(dataframe.iterrows(), total=dataframe.shape[0], desc='Processing rows'):
             dataframe_loop = pd.DataFrame()
             keywords = row[company_column_name]
@@ -464,6 +493,11 @@ def linkedin_search_scripts(
             dataframe_loop = pd.DataFrame(selected_vars)
             dataframe_final = pd.concat([dataframe_final, dataframe_loop])
             time.sleep(random.uniform(10, 17))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_company_search_company_name.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_conversations_rename_dict = {
             "keywords": company_column_name,
             "error": "Error",
