@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 sys.path.append(os.path.abspath('../scripts/enrichment_scripts'))
-from scripts.enrichment_scripts import *
+from scripts.enrichment_scripts import company_linkedin_url_search_using_serper
 
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
@@ -25,7 +25,7 @@ if st.button("Start searching"):
             try:
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
-                    dataframe_result = company_linkedin_url_search_using_serper(dataframe, columnName)
+                    dataframe_result = company_linkedin_url_search_using_serper(dataframe_input, column_name, serper_api_key)
                     write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     st.success("Searching completed!")
             except Exception as e:

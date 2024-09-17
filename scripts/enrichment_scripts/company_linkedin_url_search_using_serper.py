@@ -4,11 +4,6 @@ import sys
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 
-spreadsheetUrl = ''
-sheetName = ''
-columnName = ''
-apiKey = '5aafa202ed9b6bc3257aa719d0ae873e49495a5f'
-
 import re
 import pandas as pd
 import requests
@@ -16,7 +11,7 @@ import json
 
 from tqdm import tqdm
 
-def company_linkedin_url_search_using_serper(dataframe, columnName):
+def company_linkedin_url_search_using_serper(dataframe, columnName, apiKey):
     columnName_values = dataframe[columnName].tolist()
     df_final = pd.DataFrame()
     for columnName_value in tqdm(columnName_values, desc="Processing"):
