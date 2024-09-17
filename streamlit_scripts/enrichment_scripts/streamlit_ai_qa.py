@@ -214,20 +214,20 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
 #STREAMLIT BEGIN
 st.title("QA with Searching Keyword")
 
-spreadsheet_url = st.text_input("URL de Google Sheets", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
-sheet_name = st.text_input("Nombre de la hoja", "Test")
-column_name = st.text_input("Nombre de la columna", "domain")
-serper_api = st.text_input("Seleccione un API de Serper", "091de71c94b24d78f85f38e527c370ae6c2f2f59")
+spreadsheet_url = st.text_input("Select a Google Sheets URL", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
+sheet_name = st.text_input("Select the Sheet Name", "Test")
+column_name = st.text_input("Select the Column Name", "domain")
+serper_api = st.text_input("Select a Serper API", "091de71c94b24d78f85f38e527c370ae6c2f2f59")
 
-keywords = st.text_area("Introduce las keywords separadas por comas", "Delivery, Shipping, last mile, White Glove, final mile")
+keywords = st.text_area("Enter keywords separated by commas", "Delivery, Shipping, last mile, White Glove, final mile")
 keywords_list = [keyword.strip() for keyword in keywords.split(',')]
 keywords_final = ['"' + keyword + '"' for keyword in keywords_list]
 formatted_keywords = " | ".join(keywords_final)
 st.write("Keywords formateadas:", formatted_keywords)
 
-prompt = st.text_area("Introduce el prompt", "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine.")
+prompt = st.text_area("Enter the prompt", "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine.")
 
-verticals = st.text_area("Introduce las verticales y sus keywords")
+verticals = st.text_area("Enter the verticals and their keywords")
 
 if verticals:
     vertical_dict = process_vertical_input(verticals)
