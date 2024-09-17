@@ -216,7 +216,7 @@ st.title("QA with Searching Keyword")
 
 option = st.selectbox(
     "Select a Client ICP",
-    ("Select Scraper Type","New ICP Fit QA","Headlight Solutions (Chemical)")
+    ("Select Client ICP","New ICP Fit QA","Headlight Solutions (Chemical)")
 )
 
 if option == "New ICP Fit QA":
