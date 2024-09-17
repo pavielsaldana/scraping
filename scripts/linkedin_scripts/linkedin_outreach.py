@@ -292,6 +292,7 @@ def linkedin_outreach_scripts(
         df_all_conversations_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get the last 20 conversations---")
             progress_bar_get_last_20_conversations = st.progress(0)
             number_iterations = len(all_conversations)
             index = 0
@@ -465,6 +466,7 @@ def linkedin_outreach_scripts(
         df_all_messages_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get all messages from conversations---")
             progress_bar_get_all_messages_from_conversation = st.progress(0)
             number_iterations = len(columnName_values)
             index = 0
@@ -622,6 +624,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Send message---")
             progress_bar_send_message_using_vmid = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -652,6 +655,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Mark as seen conversation---")
             progress_bar_mark_conversation_as_seen_using_conversation_id = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -683,6 +687,7 @@ def linkedin_outreach_scripts(
         df_all_invitations_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get all connection requests---")
             progress_bar_get_all_connection_requests = st.progress(0)
             number_iterations = len(all_invitations)
             index = 0
@@ -846,6 +851,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Accept or ignore connection requests---")
             progress_bar_accept_or_remove_connection_requests = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -876,6 +882,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Send connection requests---")
             progress_bar_send_connection_requests = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -906,6 +913,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Remove connections---")
             progress_bar_remove_connections = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -936,6 +944,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Follow or unfollow leads---")
             progress_bar_follow_or_unfollow_profiles = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -967,6 +976,7 @@ def linkedin_outreach_scripts(
         df_all_connections_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get all connections---")
             progress_bar_get_all_connections_profiles = st.progress(0)
             number_iterations = len(all_connections)
             index = 0
@@ -1030,6 +1040,7 @@ def linkedin_outreach_scripts(
         df_all_connections_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get all conversations with connections---")
             progress_bar_get_all_conversations_with_connections = st.progress(0)
             number_iterations = len(all_connections)
             index = 0
@@ -1103,6 +1114,7 @@ def linkedin_outreach_scripts(
         df_all_sent_invitations_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get all sent connection requests---")
             progress_bar_get_all_connection_requests = st.progress(0)
             number_iterations = len(all_sent_invitations)
             index = 0
@@ -1212,6 +1224,7 @@ def linkedin_outreach_scripts(
         waiting_time_max_seconds = int(waiting_time_max)
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Withdraw connection requests---")
             progress_bar_get_all_connection_requests = st.progress(0)
             number_iterations = len(dataframe)
             index = 0

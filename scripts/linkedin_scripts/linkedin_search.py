@@ -361,6 +361,7 @@ def linkedin_search_scripts(
         dataframe_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get the first result from lead search (first name, last name and company name)---")
             progress_bar_people_search_first_name_last_name_company_name = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -417,6 +418,7 @@ def linkedin_search_scripts(
         dataframe_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get the first result from lead search (any query)---")
             progress_bar_people_search_any_query = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
@@ -468,6 +470,7 @@ def linkedin_search_scripts(
         dataframe_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Get the first result from account search (company name)---")
             progress_bar_company_search_company_name = st.progress(0)
             number_iterations = len(dataframe)
             index = 0
