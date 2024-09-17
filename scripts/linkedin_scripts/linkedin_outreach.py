@@ -292,6 +292,7 @@ def linkedin_outreach_scripts(
         df_all_conversations_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
+            st.write("---Retrieving last 20 conversations---")
             progress_bar_get_last_20_conversations = st.progress(0)
             number_iterations = len(all_conversations)
             index = 0
