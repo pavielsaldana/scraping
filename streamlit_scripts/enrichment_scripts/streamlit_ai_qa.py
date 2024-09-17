@@ -29,12 +29,11 @@ key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 
 def check_for_keywords(text, keywords):
-    regex_pattern = '|'.join([r'\b' + re.escape(keyword) + r'\b' for keyword in keywords])
+    regex_pattern = '|'.join([rf'\b{k}\b' for k in keywords])
     if pd.notna(text) and re.search(regex_pattern, text, re.IGNORECASE):
         return True
     else:
         return False
-
 
 def process_vertical_input(input_text):
     vertical_dict = {}
