@@ -11,9 +11,16 @@ import json
 
 from tqdm import tqdm
 
-def company_linkedin_url_search_using_serper(dataframe, columnName, apiKey):
+def company_linkedin_url_search_using_serper(dataframe, columnName, apiKey, streamlit_execution=False):
     columnName_values = dataframe[columnName].tolist()
     df_final = pd.DataFrame()
+    #--STREAMLIT--#
+    if streamlit_execution:
+        st.write("---Company LinkedIn URL search using Serper---")
+        progress_bar_company_linkedin_url_search_using_serper = st.progress(0)
+        number_iterations = len(dataframe)
+        index_steamlit = 0
+    #--STREAMLIT--#
     for columnName_value in tqdm(columnName_values, desc="Processing"):
         request_base_url = "https://google.serper.dev/search"
         payload = json.dumps({
@@ -69,4 +76,9 @@ def company_linkedin_url_search_using_serper(dataframe, columnName, apiKey):
             df_loop_final = pd.concat([df_loop_final, df_loop], axis=1)
             df_final = pd.concat([df_final, df_loop_final])
             pass
+        #--STREAMLIT--#
+        if streamlit_execution:
+            index_steamlit += 1
+            progress_bar_company_linkedin_url_search_using_serper.progress(index_steamlit / number_iterations)
+        #--STREAMLIT--#
     return df_final

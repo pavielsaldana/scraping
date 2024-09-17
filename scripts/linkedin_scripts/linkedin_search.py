@@ -364,7 +364,7 @@ def linkedin_search_scripts(
             st.write("---Get the first result from lead search (first name, last name and company name)---")
             progress_bar_people_search_first_name_last_name_company_name = st.progress(0)
             number_iterations = len(dataframe)
-            index = 0
+            index_steamlit = 0
         #--STREAMLIT--#
         for index, row in tqdm(dataframe.iterrows(), total=dataframe.shape[0], desc='Processing rows'):
             dataframe_loop = pd.DataFrame()
@@ -396,8 +396,8 @@ def linkedin_search_scripts(
             time.sleep(random.uniform(10, 17))
             #--STREAMLIT--#
             if streamlit_execution:
-                index += 1
-                progress_bar_people_search_first_name_last_name_company_name.progress(index / number_iterations)
+                index_steamlit += 1
+                progress_bar_people_search_first_name_last_name_company_name.progress(index_steamlit / number_iterations)
             #--STREAMLIT--#
         all_conversations_rename_dict = {
             "keyword_first_name": first_name_column_name,
@@ -421,7 +421,7 @@ def linkedin_search_scripts(
             st.write("---Get the first result from lead search (any query)---")
             progress_bar_people_search_any_query = st.progress(0)
             number_iterations = len(dataframe)
-            index = 0
+            index_steamlit = 0
         #--STREAMLIT--#
         for index, row in tqdm(dataframe.iterrows(), total=dataframe.shape[0], desc='Processing rows'):
             dataframe_loop = pd.DataFrame()
@@ -450,8 +450,8 @@ def linkedin_search_scripts(
             time.sleep(random.uniform(10, 17))
             #--STREAMLIT--#
             if streamlit_execution:
-                index += 1
-                progress_bar_people_search_any_query.progress(index / number_iterations)
+                index_steamlit += 1
+                progress_bar_people_search_any_query.progress(index_steamlit / number_iterations)
             #--STREAMLIT--#
         all_conversations_rename_dict = {
             "keywords": query_column_name,
@@ -473,7 +473,7 @@ def linkedin_search_scripts(
             st.write("---Get the first result from account search (company name)---")
             progress_bar_company_search_company_name = st.progress(0)
             number_iterations = len(dataframe)
-            index = 0
+            index_steamlit = 0
         #--STREAMLIT--#
         for index, row in tqdm(dataframe.iterrows(), total=dataframe.shape[0], desc='Processing rows'):
             dataframe_loop = pd.DataFrame()
@@ -498,8 +498,8 @@ def linkedin_search_scripts(
             time.sleep(random.uniform(10, 17))
             #--STREAMLIT--#
             if streamlit_execution:
-                index += 1
-                progress_bar_company_search_company_name.progress(index / number_iterations)
+                index_steamlit += 1
+                progress_bar_company_search_company_name.progress(index_steamlit / number_iterations)
             #--STREAMLIT--#
         all_conversations_rename_dict = {
             "keywords": company_column_name,
