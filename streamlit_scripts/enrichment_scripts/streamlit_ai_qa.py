@@ -226,7 +226,7 @@ if option == "New ICP Fit QA":
                                "Vertical2: \"Keyword1\", \"Keyword2\", \"Keyword3...\"")
 
 elif option == "Headlight Solutions (Chemical)":
-    keywords_input= "Delivery, Shipping, "Chemical"
+    keywords_input= "Delivery, "Shipping", "Chemical"
     prompt_input= "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
     verticals_input = (
     "Shipping: \"Shipping\", \"Logistics\", \"Freight\"\n"
