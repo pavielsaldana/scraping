@@ -226,7 +226,7 @@ prompt = st.text_area("Introduce el prompt", "Assess if the company is a manufac
 
 verticals = st.text_area("Introduce las verticales y sus keywords")
 
-if user_input:
+if verticals:
     vertical_dict = process_vertical_input(verticals)
     st.write("Verticales y Keywords:", vertical_dict)
 
