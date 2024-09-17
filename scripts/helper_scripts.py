@@ -91,8 +91,6 @@ def retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict):
     client = gspread.authorize(credentials)
     try:
         spreadsheet = client.open_by_url(spreadsheet_url)
-        worksheets = spreadsheet.worksheets()
-        st.write("Available sheets: ", [sheet.title for sheet in worksheets])
         worksheet = spreadsheet.worksheet(sheet_name)
         data = worksheet.get_all_values()
         dataframe = pd.DataFrame(data[1:], columns=data[0])
