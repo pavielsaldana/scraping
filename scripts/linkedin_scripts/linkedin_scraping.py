@@ -71,6 +71,7 @@ def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, 
     too_many_requests = False
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---Sales Navigator lead search export---")
         progress_bar_sales_navigator_lead_export = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -219,6 +220,7 @@ def sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, datafram
     too_many_requests = False
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---Sales Navigator account export---")
         progress_bar_sales_navigator_account_export = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -404,6 +406,7 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
     progress_bar = tqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn account scrape---")
         progress_bar_linkedin_account = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -1359,6 +1362,7 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
     progress_bar = tqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn lead scrape---")
         progress_bar_linkedin_lead = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -1645,6 +1649,7 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
     progress_bar = tqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn account activity scrape---")
         progress_bar_company_activity_extractor = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -1826,6 +1831,7 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
     progress_bar = tqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn job offers scrape---")
         progress_bar_job_offers_extractor = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -1989,6 +1995,7 @@ def job_offers_details_extractor(csrf_token, dataframe, column_name, cookies_dic
     progress_bar = tqdm(total=len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn job offer details scrape---")
         progress_bar_job_offers_details_extractor = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -2151,6 +2158,7 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
     progress_bar = tqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn post commenters scrape---")
         progress_bar_post_commenters_extractor = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0
@@ -2492,6 +2500,7 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
     progress_bar = tqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
+        st.write("---LinkedIn lead activity scrape---")
         progress_bar_profile_activity_extractor = st.progress(0)
         number_iterations = len(columnName_values)
         index_steamlit = 0

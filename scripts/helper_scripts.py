@@ -64,7 +64,6 @@ def retrieve_tokens_selenium(li_at):
                 request_url = log['params']['request']['url']
                 if request_url.startswith("https://www.linkedin.com/sales-api/salesApiAccess"):
                     csrf_token = log['params']['request']['headers'].get('Csrf-Token')
-                    print(f"CSRF token found: {csrf_token}")
                     break
         all_cookies = driver.get_cookies()
         cookies = {cookie['name']: cookie['value'] for cookie in all_cookies}
