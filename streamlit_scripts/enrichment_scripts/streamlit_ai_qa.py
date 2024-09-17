@@ -223,7 +223,7 @@ keywords = st.text_area("Enter keywords separated by commas", "Delivery, Shippin
 keywords_list = [keyword.strip() for keyword in keywords.split(',')]
 keywords_final = ['"' + keyword + '"' for keyword in keywords_list]
 formatted_keywords = " | ".join(keywords_final)
-st.write("Keywords formateadas:", formatted_keywords)
+st.write("Formatted Keywords:", formatted_keywords)
 
 prompt = st.text_area("Enter the prompt", "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine.")
 
