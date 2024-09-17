@@ -224,7 +224,7 @@ st.write("Keywords formateadas:", formatted_keywords)
 
 prompt = st.text_area("Introduce el prompt", "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine.")
 
-verticals = st.text_area("Introduce las verticales y sus keywords en este formato:\nVertical1: \"Keyword1\", \"Keyword2\", \"Keyword3\"...\nVertical2: \"Keyword1\", \"Keyword2\", \"Keyword3\"...")
+verticals = st.text_area("Introduce las verticales y sus keywords")
 
 if user_input:
     vertical_dict = process_vertical_input(verticals)
