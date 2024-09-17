@@ -14,7 +14,7 @@ st.title("Company LinkedIn URL search using Serper")
 spreadsheet_url = st.text_input("Spreadsheet URL (Name of the spreadsheet where the domains are located)", key="spreadsheet_url")
 sheet_name = st.text_input("Sheet name (Name of the sheet where the domains are located)", key="sheet_name")
 column_name = st.text_input("Domain column name (Name of the column where the domains are located)", key="column_name")
-serper_api_key = st.text_input("Domain column name (Name of the column where the domains are located)", key="serper_api_key")
+serper_api_key = st.text_input("Serper API key (Serper API key from serper.dev)", key="serper_api_key")
 
 if st.button("Start searching"):
         if not spreadsheet_url:
