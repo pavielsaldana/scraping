@@ -844,7 +844,16 @@ def linkedin_outreach_scripts(
     def accept_or_remove_connection_requests(dataframe, waiting_time_min, waiting_time_max, action, invitation_id_column_name, invitation_shared_secret_column_name, result_column_name):
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_accept_or_remove_connection_requests = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def accept_or_ignore_and_store_result_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -853,6 +862,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_accept_or_remove_connection_requests.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Accepting/ignoring connection requests")
         dataframe[result_column_name] = dataframe.progress_apply(accept_or_ignore_and_store_result_with_waiting, axis=1)
@@ -860,7 +874,16 @@ def linkedin_outreach_scripts(
     def send_connection_requests(dataframe, waiting_time_min, waiting_time_max, vmid_column_name, message_column_name, result_column_name):        
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_send_connection_requests = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def send_connection_and_store_result_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -869,6 +892,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_send_connection_requests.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Sending connection requests")
         dataframe[result_column_name] = dataframe.progress_apply(send_connection_and_store_result_with_waiting, axis=1)
@@ -876,7 +904,16 @@ def linkedin_outreach_scripts(
     def remove_connections(dataframe, waiting_time_min, waiting_time_max, unique_identifier_column_name, result_column_name):
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_remove_connections = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def send_connection_and_store_result_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -885,6 +922,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_remove_connections.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Removing connections")
         dataframe[result_column_name] = dataframe.progress_apply(send_connection_and_store_result_with_waiting, axis=1)
@@ -892,7 +934,16 @@ def linkedin_outreach_scripts(
     def follow_or_unfollow_profiles(dataframe, waiting_time_min, waiting_time_max, vmid_column_name, action, result_column_name):
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_follow_or_unfollow_profiles = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def follow_or_unfollow_and_store_result_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -901,6 +952,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_follow_or_unfollow_profiles.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Following/unfollowing profiles")
         dataframe[result_column_name] = dataframe.progress_apply(follow_or_unfollow_and_store_result_with_waiting, axis=1)
@@ -909,6 +965,12 @@ def linkedin_outreach_scripts(
         #-->get_all_connections
         all_connections = get_all_connections()
         df_all_connections_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_all_connections_profiles = st.progress(0)
+            number_iterations = len(all_connections)
+            index = 0
+        #--STREAMLIT--#
         for connection in all_connections:
             df_all_connections_loop = pd.DataFrame()
             lastName = safe_extract(connection, "connectedMemberResolutionResult", "lastName")
@@ -941,6 +1003,11 @@ def linkedin_outreach_scripts(
             selected_vars = {var: [all_variables[var]] for var in ["firstName", "lastName", "headline", "entityUrn", "publicIdentifier", "createdAt", "picture100x100", "picture200x200", "picture400x400", "picture800x800"]}
             df_all_connections_loop = pd.DataFrame(selected_vars)
             df_all_connections_final = pd.concat([df_all_connections_final, df_all_connections_loop])
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_get_all_connections_profiles.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_conversations_rename_dict = {
             "firstName": "First name",
             "lastName": "Last name",
