@@ -29,7 +29,7 @@ key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 
 def check_for_keywords(text, keywords):
-    regex_pattern = '|'.join([r'\b' + re.escape(keyword) + r'\b' for keyword in keywords])
+    regex_pattern = '|'.join([rf'\b{k}\b' for k in keywords])
     if pd.notna(text) and re.search(regex_pattern, text, re.IGNORECASE):
         return True
     else:
@@ -168,10 +168,6 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     data = worksheet.get_all_values()
     dataframe = pd.DataFrame(data[1:], columns=data[0])
     num_rows = dataframe.shape[0]
-
-    for vertical in vertical_dict.keys():
-        if vertical not in dataframe.columns:
-            dataframe[vertical] = False  # Inicializamos la columna con False
         
     for index, row in dataframe.iterrows():
         try:
@@ -211,7 +207,7 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     if 'Error' not in df_final.columns:
         df_final['Error'] = ''
     df_final['QA'], df_final['Reason'] = zip(*df_final['result'].apply(split_text))
-    df_final = df_final[[column_name, 'QA', 'Reason', 'result', 'Error']]
+    df_final = df_final[[column_name, 'QA', 'Reason', 'result', 'Error'] + list(vertical_dict.keys())]
     worksheet.clear()
     set_with_dataframe(worksheet, df_final, include_index=False, resize=True, allow_formulas=True)
     return df_final, totalcost
