@@ -226,7 +226,7 @@ if option == "New ICP Fit QA":
                                "Vertical2: \"Keyword1\", \"Keyword2\", \"Keyword3...\"")
 
 if option == "Headlight Solutions (Chemical)":
-    keywords_input= "Delivery", "Shipping", "Chemical"
+    keywords_input= "Delivery, Shipping, Chemical"
     prompt_input= "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
     verticals_input = (
     "Shipping: \"Shipping\", \"Logistics\", \"Freight\"\n"
@@ -241,7 +241,7 @@ if option == "Headlight Solutions (Chemical)":
 )
 
 if option == "Headlight Solutions (Steel)":
-    keywords_input= "Delivery", "Shipping", "Steel"
+    keywords_input= "Delivery, Shipping, Steel"
     prompt_input= "Assess if the company is a Steel products manufacturer or distributor or supplier. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
     verticals_input = (
     "Steel: \"Steel distributor\", \"Steel products supplier\", \"Steel wholesale\", \"Steel stockist\", \"Structural steel\", \"Steel fabrication\", \"Stainless steel\", \"Carbon steel\", \"Alloy steel\", \"Steel sheets\", \"Steel plates\", \"Steel bars\", \"Steel coils\", \"Steel pipes\", \"Steel tubing\", \"Steel beams\", \"Steel channels\", \"Steel angles\", \"Steel rods\", \"Steel wire\", \"Steel mesh\", \"Metal fabrication\", \"Industrial steel\", \"Steel processing\", \"Cold rolled steel\", \"Hot rolled steel\", \"Galvanized steel\", \"Mild steel\", \"Tool steel\", \"Steel service center\"\n"
