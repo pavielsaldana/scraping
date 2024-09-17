@@ -228,8 +228,17 @@ if option == "New ICP Fit QA":
 elif option == "Headlight Solutions (Chemical)":
     keywords_input= "Delivery, Shipping, last mile, White Glove, final mile"
     prompt_input= "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
-    verticals_input= ("Shipping: \"Shipping\", \"Delivery\", \"Logistics\", \"Freight\"\n"
-                               "Chemicals: \"Chemical\", \"Chemicals\", \"Hazardous Materials\"")
+    verticals_input = (
+    "Shipping: \"Shipping\", \"Logistics\", \"Freight\"\n"
+    "Chemicals: \"Chemical\", \"Chemicals\"\n"
+    "Distributor: \"Distributor\", \"Distributors\"\n"
+    "Delivery: \"Delivery\"\n"
+    "Fleet: \"Fleet\"\n"
+    "Truck: \"Truck\"\n"
+    "Products: \"Aldehyde\", \"Aldehydes\", \"Alcohol\", \"Alcohols\", \"Ester\", \"Esters\", \"Ether\", \"Ethers\", \"Amine\", \"Amines\", \"Carboxylic Acid\", \"Carboxylic Acids\", \"Anhydride\", \"Anhydrides\", \"Aromatic Compound\", \"Aromatic Compounds\", \"Phenol\", \"Phenols\", \"Alkane\", \"Alkanes\", \"Alkene\", \"Alkenes\", \"Alkyne\", \"Alkynes\", \"Oxide\", \"Oxides\", \"Hydroxide\", \"Hydroxides\", \"Nitrate\", \"Nitrates\", \"Sulfate\", \"Sulfates\", \"Phosphate\", \"Phosphates\", \"Chloride\", \"Chlorides\", \"Carbonate\", \"Carbonates\", \"Surfactant\", \"Surfactants\", \"Adhesive\", \"Adhesives\", \"Coating\", \"Coatings\", \"Sealant\", \"Sealants\", \"Flame Retardant\", \"Flame Retardants\", \"Plasticizer\", \"Plasticizers\", \"Biocide\", \"Biocides\", \"Catalyst\", \"Catalysts\", \"Inhibitor\", \"Inhibitors\", \"Pigment\", \"Pigments\", \"Additive\", \"Additives\", \"Preservative\", \"Preservatives\", \"Polymer\", \"Polymers\", \"Methanol\", \"Acid\", \"Acids\", \"Ethanol\", \"Acetone\", \"Formaldehyde\", \"Lubricant\", \"Lubricants\", \"Ethylene\", \"Propylene\", \"Benzene\", \"Polyethylene\", \"Polypropylene\", \"Polyvinyl\", \"Pesticide\", \"Pesticides\", \"Emulsion\", \"Emulsions\"\n"
+    "partner: \"DHL\", \"UPS\", \"USPS\", \"United Parcel Service\", \"Fedex\"\n"
+    "Association: \"Association\""
+)
 
 if option != "Select Client ICP":   
     st.write("Use the IA QA tool when you have a list of domains that you need to do QA to check if the companies are fit with the ICP, you can also check if there are mention of certain keywords in the webpages.")
