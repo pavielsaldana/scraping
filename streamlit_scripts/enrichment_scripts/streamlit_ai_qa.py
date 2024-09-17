@@ -182,19 +182,22 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                     llm_question = prompt
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question, OPENAI_API_KEY)
-                    for vertical, keywords in vertical_dict.items():
-                        dataframe.at[index, vertical] = check_for_keywords(text, keywords)
-                    error = check_for_error(response)
-                    dataframe.at[index, 'Error'] = error
-                    prompt_cost = cb.prompt_tokens * cost_per_prompt_token
-                    output_cost = cb.completion_tokens * cost_per_completion_token
-                    total_cost = prompt_cost + output_cost
-                    totalcost += total_cost
-                    dataframe.at[index, 'result'] = response
+                        error = check_for_error(response)
+                        dataframe.at[index, 'Error'] = error
+                        prompt_cost = cb.prompt_tokens * cost_per_prompt_token
+                        output_cost = cb.completion_tokens * cost_per_completion_token
+                        total_cost = prompt_cost + output_cost
+                        totalcost += total_cost
+                        dataframe.at[index, 'result'] = response
                 else:
                     dataframe.at[index, 'result'] = ""
             else:
                 dataframe.at[index, 'result'] = error_message
+                
+            for vertical, keywords in vertical_dict.items():
+                found = check_for_keywords(text, keywords)
+                dataframe.at[index, vertical] = found
+                
         except Exception as e:
             error_message = str(e)
             dataframe.at[index, 'QA'] = error_message
