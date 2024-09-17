@@ -229,28 +229,28 @@ elif option == "Headlight Solutions (Chemical)":
     prompt_input= "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
     verticals_input= "Vertical1"
 
-st.write("Use the IA QA tool when you have a list of domains that you need to do QA to check if the companies are fit with the ICP, you can also check if there are mention of certain keywords in the webpages.")
-st.write("[Tutorial >](https://www.loom.com/looms/videos)")
-
-spreadsheet_url = st.text_input("Select a Google Sheets URL", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
-sheet_name = st.text_input("Select the Sheet Name", "Test")
-column_name = st.text_input("Select the Column Name", "domain")
-serper_api = st.text_input("Select a Serper API", "091de71c94b24d78f85f38e527c370ae6c2f2f59")
-
-keywords = st.text_area("Enter keywords separated by commas", keywords_input)
-keywords_list = [keyword.strip() for keyword in keywords.split(',')]
-keywords_final = ['"' + keyword + '"' for keyword in keywords_list]
-formatted_keywords = " | ".join(keywords_final)
-st.write("Formatted Keywords:", formatted_keywords)
-
-prompt = st.text_area("Enter the prompt", prompt_input)
-
-verticals = st.text_area("Enter the verticals and their keywords", verticals_input)
-
-if verticals:
-    vertical_dict = process_vertical_input(verticals)
-
 if option != "Select Client ICP":   
+    st.write("Use the IA QA tool when you have a list of domains that you need to do QA to check if the companies are fit with the ICP, you can also check if there are mention of certain keywords in the webpages.")
+    st.write("[Tutorial >](https://www.loom.com/looms/videos)")
+    
+    spreadsheet_url = st.text_input("Select a Google Sheets URL", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
+    sheet_name = st.text_input("Select the Sheet Name", "Test")
+    column_name = st.text_input("Select the Column Name", "domain")
+    serper_api = st.text_input("Select a Serper API", "091de71c94b24d78f85f38e527c370ae6c2f2f59")
+    
+    keywords = st.text_area("Enter keywords separated by commas", keywords_input)
+    keywords_list = [keyword.strip() for keyword in keywords.split(',')]
+    keywords_final = ['"' + keyword + '"' for keyword in keywords_list]
+    formatted_keywords = " | ".join(keywords_final)
+    st.write("Formatted Keywords:", formatted_keywords)
+    
+    prompt = st.text_area("Enter the prompt", prompt_input)
+    
+    verticals = st.text_area("Enter the verticals and their keywords", verticals_input)
+    
+    if verticals:
+        vertical_dict = process_vertical_input(verticals)
+
     if st.button("Start processing"):
         if not spreadsheet_url or not serper_api:
             st.error("Please enter both the Spreadsheet URL and the Serper API key")
