@@ -27,6 +27,26 @@ key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 #openai==0.28.1
 #tiktoken==0.7.0
 
+
+def check_for_keywords(text, keywords):
+    regex_pattern = '|'.join([rf'\b{k}\b' for k in keywords])
+    if pd.notna(text) and re.search(regex_pattern, text, re.IGNORECASE):
+        return True
+    else:
+        return False
+
+
+def process_vertical_input(input_text):
+    vertical_dict = {}
+    lines = input_text.split('\n')
+    for line in lines:
+        if ':' in line:
+            vertical, keywords = line.split(':', 1)
+            keywords = [kw.strip().strip('"') for kw in keywords.split(',')]
+            vertical_dict[vertical.strip()] = keywords
+    return vertical_dict
+
+
 def buscar_enlaces_organicos(keywords, row, serper_api):
     conn = http.client.HTTPSConnection("google.serper.dev")
     payload = json.dumps({
@@ -137,7 +157,7 @@ def check_for_error(response):
 
 error_message = "Error 422"
 
-def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, OPENAI_API_KEY):
+def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, OPENAI_API_KEY, vertical_dict):
     cost_per_prompt_token = 0.000015 / 1000
     cost_per_completion_token = 0.0006 / 1000
     totalcost = 0
@@ -162,13 +182,15 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
                     llm_question = prompt
                     with get_openai_callback() as cb:
                         response = get_response_from_chain(vectorstore, search_question, llm_question, OPENAI_API_KEY)
-                        error = check_for_error(response)
-                        dataframe.at[index, 'Error'] = error
-                        prompt_cost = cb.prompt_tokens * cost_per_prompt_token
-                        output_cost = cb.completion_tokens * cost_per_completion_token
-                        total_cost = prompt_cost + output_cost
-                        totalcost += total_cost
-                        dataframe.at[index, 'result'] = response
+                    for vertical, keywords in vertical_dict.items():
+                        dataframe.at[index, vertical] = check_for_keywords(text, keywords)
+                    error = check_for_error(response)
+                    dataframe.at[index, 'Error'] = error
+                    prompt_cost = cb.prompt_tokens * cost_per_prompt_token
+                    output_cost = cb.completion_tokens * cost_per_completion_token
+                    total_cost = prompt_cost + output_cost
+                    totalcost += total_cost
+                    dataframe.at[index, 'result'] = response
                 else:
                     dataframe.at[index, 'result'] = ""
             else:
@@ -202,6 +224,12 @@ st.write("Keywords formateadas:", formatted_keywords)
 
 prompt = st.text_area("Introduce el prompt", "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manuufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine.")
 
+verticals = st.text_area("Introduce las verticales y sus keywords en este formato:\nVertical1: \"Keyword1\", \"Keyword2\", \"Keyword3\"...\nVertical2: \"Keyword1\", \"Keyword2\", \"Keyword3\"...")
+
+if user_input:
+    vertical_dict = process_vertical_input(verticals)
+    st.write("Verticales y Keywords:", vertical_dict)
+
 if st.button("Iniciar procesamiento"):
     if not spreadsheet_url or not serper_api:
         st.error("Please enter both the Spreadsheet URL and the Serper API key")
@@ -209,7 +237,7 @@ if st.button("Iniciar procesamiento"):
         with st.spinner("Running the scraper. This could take a few minutes depending on the list size..."):
             try:
                 progress_bar = st.progress(0)
-                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, OPENAI_API_KEY)
+                result, totalcost = process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, prompt, serper_api, progress_bar, key_dict, OPENAI_API_KEY, vertical_dict)
                 st.success("Scraping completed!")
                 st.dataframe(result)
                 st.write(f"El costo total fue: ${totalcost:.6f}")
