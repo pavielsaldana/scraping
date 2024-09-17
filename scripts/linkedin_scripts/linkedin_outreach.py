@@ -292,7 +292,6 @@ def linkedin_outreach_scripts(
         df_all_conversations_final = pd.DataFrame()
         #--STREAMLIT--#
         if streamlit_execution:
-            st.write("---Retrieving last 20 conversations---")
             progress_bar_get_last_20_conversations = st.progress(0)
             number_iterations = len(all_conversations)
             index = 0
@@ -464,6 +463,12 @@ def linkedin_outreach_scripts(
         dataframe.drop_duplicates(subset=[conversation_id_column_name], inplace=True)
         columnName_values = dataframe[conversation_id_column_name].tolist()
         df_all_messages_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_all_messages_from_conversation = st.progress(0)
+            number_iterations = len(columnName_values)
+            index = 0
+        #--STREAMLIT--#
         for item in columnName_values:
             all_messages_json = get_conversation(item)
             all_messages = safe_extract(all_messages_json, "elements")
@@ -521,6 +526,11 @@ def linkedin_outreach_scripts(
                 df_all_messages_loop = pd.DataFrame(selected_vars)
                 df_all_messages_final = pd.concat(
                     [df_all_messages_final, df_all_messages_loop])
+                #--STREAMLIT--#
+                if streamlit_execution:
+                    index += 1
+                    progress_bar_get_all_messages_from_conversation.progress(index / number_iterations)
+                #--STREAMLIT--#
         df_all_messages_final['createdAt'] = pd.to_datetime(df_all_messages_final['createdAt'])
         df_all_messages_final.sort_values(by=['conversation_dashEntityUrn', 'createdAt'], inplace=True)
         all_messages_rename_dict = {
@@ -610,7 +620,16 @@ def linkedin_outreach_scripts(
         premiumSubscriber = safe_extract(profile_data, "premiumSubscriber")
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_send_message_using_vmid = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def send_message_and_store_result_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -619,6 +638,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_send_message_using_vmid.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Sending messages")
         dataframe[result_column_name] = dataframe.progress_apply(send_message_and_store_result_with_waiting, axis=1)
@@ -626,7 +650,16 @@ def linkedin_outreach_scripts(
     def mark_conversation_as_seen_using_conversation_id(dataframe, waiting_time_min, waiting_time_max, conversation_id_column_name, result_column_name):
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_mark_conversation_as_seen_using_conversation_id = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def mark_conversation_as_seen_and_store_result_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -635,6 +668,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_mark_conversation_as_seen_using_conversation_id.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Marking as seen conversations")
         dataframe[result_column_name] = dataframe.progress_apply(mark_conversation_as_seen_and_store_result_with_waiting, axis=1)
@@ -643,6 +681,12 @@ def linkedin_outreach_scripts(
         #get_all_invitations
         all_invitations = get_all_invitations()
         df_all_invitations_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_all_connection_requests = st.progress(0)
+            number_iterations = len(all_invitations)
+            index = 0
+        #--STREAMLIT--#
         for invitation in all_invitations:
             df_all_invitations_loop = pd.DataFrame()
             #Invitation
@@ -765,6 +809,11 @@ def linkedin_outreach_scripts(
             selected_vars = {var: [all_variables[var]] for var in ["entityUrn", "totalCount", "invitationType", "sentTime", "subtitle", "typeLabel", "title", "firstName", "lastName", "fullName", "dashEntityUrn", "occupation", "objectUrn", "banner200x800", "banner350x1400", "publicIdentifier", "picture100x100", "picture200x200", "picture400x400", "picture800x800", "customMessage", "sharedSecret", "unseen"]}
             df_all_invitations_loop = pd.DataFrame(selected_vars)
             df_all_invitations_final = pd.concat([df_all_invitations_final, df_all_invitations_loop])
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_get_all_connection_requests.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_invitations_rename_dict = {
             "entityUrn": "Invitation - ID",
             "totalCount": "Invitation - Shared connections count",
