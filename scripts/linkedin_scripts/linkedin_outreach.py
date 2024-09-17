@@ -1028,6 +1028,12 @@ def linkedin_outreach_scripts(
         #-->get_all_connections
         all_connections = get_all_connections()
         df_all_connections_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_all_conversations_with_connections = st.progress(0)
+            number_iterations = len(all_connections)
+            index = 0
+        #--STREAMLIT--#
         for connection in all_connections:
             df_all_connections_loop = pd.DataFrame()
             lastName = safe_extract(connection, "connectedMemberResolutionResult", "lastName")
@@ -1060,6 +1066,11 @@ def linkedin_outreach_scripts(
             selected_vars = {var: [all_variables[var]] for var in ["firstName", "lastName", "headline", "entityUrn", "publicIdentifier", "createdAt", "picture100x100", "picture200x200", "picture400x400", "picture800x800"]}
             df_all_connections_loop = pd.DataFrame(selected_vars)
             df_all_connections_final = pd.concat([df_all_connections_final, df_all_connections_loop])
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_get_all_conversations_with_connections.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_conversations_rename_dict = {
             "firstName": "First name",
             "lastName": "Last name",
@@ -1090,6 +1101,12 @@ def linkedin_outreach_scripts(
         #get_all_sent_invitations
         all_sent_invitations = get_all_sent_invitations()
         df_all_sent_invitations_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_all_connection_requests = st.progress(0)
+            number_iterations = len(all_sent_invitations)
+            index = 0
+        #--STREAMLIT--#
         for invitations in all_sent_invitations:
             df_all_sent_invitations_loop = pd.DataFrame()
             #Invitee
@@ -1159,6 +1176,11 @@ def linkedin_outreach_scripts(
             selected_vars = {var: [all_variables[var]] for var in ["invitationId", "sentTimeLabel", "message", "inviterFollowingInvitee", "genericInvitationType", "invitationType", "invitationState", "invitee_firstName", "invitee_lastName", "title", "subtitle", "invitee_cardActionTarget", "invitee_entityUrn", "picture100x100", "picture200x200", "picture400x400", "picture800x800", "inviter_firstName", "inviter_lastName", "inviter_objectUrn", "inviter_entityUrn", "inviter_publicIdentifier"]}
             df_all_sent_invitations_loop = pd.DataFrame(selected_vars)
             df_all_sent_invitations_final = pd.concat([df_all_sent_invitations_final, df_all_sent_invitations_loop])
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_get_all_connection_requests.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_sent_invitations_rename_dict = {
             "invitationId": "Invitation - ID",
             "sentTimeLabel": "Invitation - Sent time",
@@ -1188,7 +1210,16 @@ def linkedin_outreach_scripts(
     def withdraw_connection_requests(dataframe, waiting_time_min, waiting_time_max, invitation_id_column_name, result_column_name):
         waiting_time_min_seconds = int(waiting_time_min)
         waiting_time_max_seconds = int(waiting_time_max)
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_all_connection_requests = st.progress(0)
+            number_iterations = len(dataframe)
+            index = 0
+        #--STREAMLIT--#
         def withdraw_invitation_with_waiting(row):
+            #--STREAMLIT--#
+            nonlocal index
+            #--STREAMLIT--#
             captured_output = StringIO()
             old_stdout = sys.stdout
             sys.stdout = captured_output
@@ -1197,6 +1228,11 @@ def linkedin_outreach_scripts(
             result = captured_output.getvalue()
             captured_output.close()
             time.sleep(random.randint(waiting_time_min_seconds, waiting_time_max_seconds))
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_get_all_connection_requests.progress(index / number_iterations)
+            #--STREAMLIT--#
             return result.strip()
         tqdm.pandas(desc="Withdrawing connection requests")
         dataframe[result_column_name] = dataframe.progress_apply(withdraw_invitation_with_waiting, axis=1)
