@@ -28,7 +28,8 @@ def linkedin_outreach_scripts(
     cookies_dict: dict = None, 
     invitation_id_column_name: str = None, 
     invitation_shared_secret_column_name: str = None, 
-    unique_identifier_column_name: str = None
+    unique_identifier_column_name: str = None,
+    streamlit_execution: bool = False
 ) -> None:
     headers = {
         'csrf-token': csrf_token,
@@ -289,6 +290,12 @@ def linkedin_outreach_scripts(
         all_conversations_json = get_conversations()
         all_conversations = safe_extract(all_conversations_json, "elements")
         df_all_conversations_final = pd.DataFrame()
+        #--STREAMLIT--#
+        if streamlit_execution:
+            progress_bar_get_last_20_conversations = st.progress(0)
+            number_iterations = len(all_conversations)
+            index = 0
+        #--STREAMLIT--#
         for conversation in all_conversations:
             df_all_conversations_loop = pd.DataFrame()
             conversation_dashEntityUrn = safe_extract(conversation, "dashEntityUrn")
@@ -403,6 +410,11 @@ def linkedin_outreach_scripts(
             df_all_conversations_loop = pd.DataFrame(selected_vars)
             df_all_conversations_final = pd.concat(
                 [df_all_conversations_final, df_all_conversations_loop])
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index += 1
+                progress_bar_get_last_20_conversations.progress(index / number_iterations)
+            #--STREAMLIT--#
         all_conversations_rename_dict = {
             "conversation_dashEntityUrn": "Conversation - ID",
             "conversation_inboxType": "Conversation - Inbox type",
