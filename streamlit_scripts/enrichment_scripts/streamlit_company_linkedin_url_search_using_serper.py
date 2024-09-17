@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 sys.path.append(os.path.abspath('../scripts/enrichment_scripts'))
-from scripts.helper_scripts import *
+from scripts.enrichment_scripts import *
 
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
