@@ -29,7 +29,7 @@ key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 
 
 def check_for_keywords(text, keywords):
-    regex_pattern = '|'.join([rf'\b{k}\b' for k in keywords])
+    regex_pattern = '|'.join([r'\b' + re.escape(keyword) + r'\b' for keyword in keywords])
     if pd.notna(text) and re.search(regex_pattern, text, re.IGNORECASE):
         return True
     else:
@@ -169,6 +169,11 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
     data = worksheet.get_all_values()
     dataframe = pd.DataFrame(data[1:], columns=data[0])
     num_rows = dataframe.shape[0]
+
+    for vertical in vertical_dict.keys():
+    if vertical not in dataframe.columns:
+        dataframe[vertical] = False  # Inicializamos la columna con False
+        
     for index, row in dataframe.iterrows():
         try:
             domain = row[column_name]
