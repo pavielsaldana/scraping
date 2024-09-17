@@ -222,8 +222,8 @@ option = st.selectbox(
 if option == "New ICP Fit QA":
     keywords_input= "Keyword1_to_search, Keyword2_to_search, Keyword3_to_search..."
     prompt_input= "Assess if the company is a XXXXXX by searching for terms or phrases indicating this kind of services  including but not limited to XXXXXX. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
-    verticals_input= ("Vertical1: \"Keyword1\", \"Keyword2\", \"Keyword3\"...,\n"
-                               "Vertical2: \"Keyword1\", \"Keyword2\", \"Keyword3\"..."")
+    verticals_input= ("Vertical1: \"Keyword1\", \"Keyword2\", \"Keyword3...\"\n"
+                               "Vertical2: \"Keyword1\", \"Keyword2\", \"Keyword3...\"")
 
 elif option == "Headlight Solutions (Chemical)":
     keywords_input= "Delivery, Shipping, last mile, White Glove, final mile"
