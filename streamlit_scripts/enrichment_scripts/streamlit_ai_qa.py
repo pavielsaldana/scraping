@@ -225,8 +225,8 @@ if option == "New ICP Fit QA":
     verticals_input= ("Vertical1: \"Keyword1\", \"Keyword2\", \"Keyword3...\"\n"
                                "Vertical2: \"Keyword1\", \"Keyword2\", \"Keyword3...\"")
 
-elif option == "Headlight Solutions (Chemical)":
-    keywords_input= "Delivery, "Shipping", "Chemical"
+if option == "Headlight Solutions (Chemical)":
+    keywords_input= "Delivery", "Shipping", "Chemical"
     prompt_input= "Assess if the company is a manufacturer or provides any delivery or shipping of Chemical products or derivatives by searching for terms or phrases indicating this kind of services  including but not limited to 'Chemical Distributors', 'Chemical Manufacturers', 'Shipping', 'Delivery'. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
     verticals_input = (
     "Shipping: \"Shipping\", \"Logistics\", \"Freight\"\n"
@@ -240,8 +240,8 @@ elif option == "Headlight Solutions (Chemical)":
     "Association: \"Association\""
 )
 
-elif option == "Headlight Solutions (Steel)":
-    keywords_input= "Delivery, "Shipping", "Steel"
+if option == "Headlight Solutions (Steel)":
+    keywords_input= "Delivery", "Shipping", "Steel"
     prompt_input= "Assess if the company is a Steel products manufacturer or distributor or supplier. Respond in the following manner: Yes. Provide a brief explanation (no more than 300 characters) on why it qualifies. No. Provide a brief explanation (no more than 300 characters) on why it does not qualify. Maybe. If the information is ambiguous or insufficient, briefly explain (no more than 300 characters) why it's not possible to determine."
     verticals_input = (
     "Steel: \"Steel distributor\", \"Steel products supplier\", \"Steel wholesale\", \"Steel stockist\", \"Structural steel\", \"Steel fabrication\", \"Stainless steel\", \"Carbon steel\", \"Alloy steel\", \"Steel sheets\", \"Steel plates\", \"Steel bars\", \"Steel coils\", \"Steel pipes\", \"Steel tubing\", \"Steel beams\", \"Steel channels\", \"Steel angles\", \"Steel rods\", \"Steel wire\", \"Steel mesh\", \"Metal fabrication\", \"Industrial steel\", \"Steel processing\", \"Cold rolled steel\", \"Hot rolled steel\", \"Galvanized steel\", \"Mild steel\", \"Tool steel\", \"Steel service center\"\n"
@@ -256,7 +256,6 @@ elif option == "Headlight Solutions (Steel)":
     "Partner: \"DHL\", \"UPS\", \"USPS\", \"United Parcel Service\", \"Fedex\"\n"
     "Association: \"Association\""
 )
-
 
 if option != "Select Client ICP":   
     st.write("Use the IA QA tool when you have a list of domains that you need to do QA to check if the companies are fit with the ICP, you can also check if there are mention of certain keywords in the webpages.")
