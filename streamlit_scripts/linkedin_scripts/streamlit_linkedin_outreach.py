@@ -156,46 +156,46 @@ if linkedin_outreach_option != "Select one LinkedIn outreach script":
                 JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
                 if linkedin_outreach_option == "Obtain the current user profile":
                     script_type = "obtain_current_user_profile"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Get all connections":
                     script_type = "get_all_connections_profiles"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Get all connection requests":
                     script_type = "get_all_connection_requests"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Get all sent connection requests":
                     script_type = "get_all_sent_connection_requests"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Get the last 20 conversations":
                     script_type = "get_last_20_conversations"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Get all conversations with connections":
                     script_type = "get_all_conversations_with_connections"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Get all messages from conversations":
                     script_type = 'get_all_messages_from_conversation'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Mark as seen conversation":
                     script_type = 'mark_conversation_as_seen_using_conversation_id'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Remove connections":
                     script_type = 'remove_connections'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Accept or ignore connection requests":
                     script_type = "accept_or_remove_connection_requests"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Withdraw connection requests":
                     script_type = "withdraw_connection_requests"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Follow or unfollow leads (must be a connection)":
                     script_type = "follow_or_unfollow_profiles"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Send connection requests":
                     script_type = 'send_connection_requests'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
                 if linkedin_outreach_option == "Send message":
                     script_type = 'send_message_using_vmid'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type)                                       
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)                                       
                 write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                 st.success("Scraping completed!")
             except Exception as e:
