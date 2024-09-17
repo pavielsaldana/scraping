@@ -11,6 +11,7 @@ key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
 streamlit_execution = True
 
 st.title("Company LinkedIn URL search using Serper")
+st.write("Before executing any script, please ensure that you share your spreadsheet with this account, granting editor permissions: kalungi-google-colab@invertible-now-393117.iam.gserviceaccount.com")
 spreadsheet_url = st.text_input("Spreadsheet URL (Name of the spreadsheet where the domains are located)", key="spreadsheet_url")
 sheet_name = st.text_input("Sheet name (Name of the sheet where the domains are located)", key="sheet_name")
 column_name = st.text_input("Domain column name (Name of the column where the domains are located)", key="column_name")
