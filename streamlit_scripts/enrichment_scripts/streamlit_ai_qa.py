@@ -214,6 +214,9 @@ def process_data(spreadsheet_url, sheet_name, column_name, formatted_keywords, p
 #STREAMLIT BEGIN
 st.title("QA with Searching Keyword")
 
+st.write("Use the IA QA tool when you have a list of domains that you need to do QA to check if the companies are fit with the ICP, you can also check if there are mention of certain keywords in the webpages.")
+st.write("[Tutorial >](https://www.loom.com/looms/videos)")
+
 spreadsheet_url = st.text_input("Select a Google Sheets URL", "https://docs.google.com/spreadsheets/d/1WdRriLXggLZlz1dIoyiGMEdu13YVWibJLp7u5-Z6Gjo/edit?gid=352666901#gid=352666901")
 sheet_name = st.text_input("Select the Sheet Name", "Test")
 column_name = st.text_input("Select the Column Name", "domain")
