@@ -236,8 +236,7 @@ verticals = st.text_area("Enter the verticals and their keywords",
 
 if verticals:
     vertical_dict = process_vertical_input(verticals)
-    st.write("Verticales y Keywords:", vertical_dict)
-
+    
 if st.button("Start processing"):
     if not spreadsheet_url or not serper_api:
         st.error("Please enter both the Spreadsheet URL and the Serper API key")
