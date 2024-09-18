@@ -43,7 +43,7 @@ if check_password():
     company_linkedin_url_search_using_serper_page = st.Page("streamlit_scripts/enrichment_scripts/streamlit_company_linkedin_url_search_using_serper.py",
                         title="Company LinkedIn URL search using Serper",
                         icon=":material/checklist_rtl:")
-    apollo_enrichment_page = st.Page("streamlit_scripts/enrichment_scripts/apollo_enrichment.py",
+    apollo_enrichment_page = st.Page("streamlit_scripts/enrichment_scripts/streamlit_apollo_enrichment.py",
                         title="Apollo enrichment",
                         icon=":material/checklist_rtl:")
     pg = st.navigation(
