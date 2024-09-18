@@ -68,7 +68,7 @@ def buscar_enlaces_organicos(keywords, row, serper_api):
 def get_text_from_url(url):
     client = ZenRowsClient(zenrowsApiKey)
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=25)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
         for script_or_style in soup(['script', 'style']):
