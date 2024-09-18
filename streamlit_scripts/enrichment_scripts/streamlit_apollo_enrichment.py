@@ -42,6 +42,8 @@ if apollo_enrichment_option == "Contact enrichment":
         'API key 2', 
         'API key 3',
         'API key 4',
+        'API key 5',
+        'API key 6',
     ])
     if api_key_option == 'API key 1':
         api_key = st.secrets["APOLLO_API_KEY_OCC"]["value"]
@@ -51,6 +53,10 @@ if apollo_enrichment_option == "Contact enrichment":
         api_key = st.secrets["APOLLO_API_KEY_N"]["value"]
     elif api_key_option == 'API key 4':
         api_key = st.secrets["APOLLO_API_KEY_S"]["value"]
+    elif api_key_option == 'API key 5':
+        api_key = st.secrets["APOLLO_API_KEY_SG"]["value"]
+    elif api_key_option == 'API key 6':
+        api_key = st.secrets["APOLLO_API_KEY_M"]["value"]
     spreadsheet_url = st.text_input("Spreadsheet URL", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     st.write("All the following columns are optional, leave them empty if you do not have them.")
@@ -66,6 +72,8 @@ if apollo_enrichment_option == "Company enrichment":
         'API key 2', 
         'API key 3',
         'API key 4',
+        'API key 5',
+        'API key 6',
     ])
     if api_key_option == 'API key 1':
         api_key = st.secrets["APOLLO_API_KEY_OCC"]["value"]
@@ -75,6 +83,10 @@ if apollo_enrichment_option == "Company enrichment":
         api_key = st.secrets["APOLLO_API_KEY_N"]["value"]
     elif api_key_option == 'API key 4':
         api_key = st.secrets["APOLLO_API_KEY_S"]["value"]
+    elif api_key_option == 'API key 5':
+        api_key = st.secrets["APOLLO_API_KEY_SG"]["value"]
+    elif api_key_option == 'API key 6':
+        api_key = st.secrets["APOLLO_API_KEY_M"]["value"]
     spreadsheet_url = st.text_input("Spreadsheet URL", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     domain_column_name = st.text_input("Domain column name (The person's company domain)", key="domain_column_name")
