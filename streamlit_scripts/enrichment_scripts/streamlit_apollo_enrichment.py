@@ -93,7 +93,7 @@ if apollo_enrichment_option != "Select one Apollo enrichment script":
                         dataframe_result = apollo_contact_enrichment(api_key, dataframe_input, first_name_column_name, last_name_column_name, name_column_name, email_column_name, organization_name_column_name, domain_column_name, streamlit_execution)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     if apollo_enrichment_option == "Company enrichment":
-                        dataframe_result = apollo_company_enrichment(api_key, dataframe_input, domain_column_name, streamlit_execution=False)
+                        dataframe_result = apollo_company_enrichment(api_key, dataframe_input, domain_column_name, streamlit_execution)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     st.success("Enrichment completed!")
             except Exception as e:
