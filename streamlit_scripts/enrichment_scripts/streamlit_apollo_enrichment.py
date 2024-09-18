@@ -75,6 +75,8 @@ if apollo_enrichment_option == "Company enrichment":
         api_key = st.secrets["APOLLO_API_KEY_N"]["value"]
     elif api_key_option == 'API key 4':
         api_key = st.secrets["APOLLO_API_KEY_S"]["value"]
+    spreadsheet_url = st.text_input("Spreadsheet URL", key="spreadsheet_url")
+    sheet_name = st.text_input("Sheet name", key="sheet_name")
     domain_column_name = st.text_input("Domain column name (The person's company domain)", key="domain_column_name")
 
 if apollo_enrichment_option != "Select one Apollo enrichment script":
