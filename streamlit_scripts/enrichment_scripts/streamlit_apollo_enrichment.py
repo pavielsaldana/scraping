@@ -50,7 +50,7 @@ if apollo_enrichment_option == "Contact enrichment":
     elif api_key_option == 'API key 3':
         api_key = st.secrets["APOLLO_API_KEY_N"]["value"]
     elif api_key_option == 'API key 4':
-        api_key = st.secrets["APOLLO_API_KEY_S"]["value"]    
+        api_key = st.secrets["APOLLO_API_KEY_S"]["value"]
     spreadsheet_url = st.text_input("Spreadsheet URL", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name", key="sheet_name")
     st.write("All the following columns are optional, leave them empty if you do not have them.")
@@ -61,7 +61,21 @@ if apollo_enrichment_option == "Contact enrichment":
     organization_name_column_name = st.text_input("Company name column name (The person's company name)", key="organization_name_column_name")
     domain_column_name = st.text_input("Domain column name (The person's company domain)", key="domain_column_name")
 if apollo_enrichment_option == "Company enrichment":
-    st.write("Not implemented yet.")
+    api_key_option = st.selectbox("Select an API key:", [
+        'API key 1', 
+        'API key 2', 
+        'API key 3',
+        'API key 4',
+    ])
+    if api_key_option == 'API key 1':
+        api_key = st.secrets["APOLLO_API_KEY_OCC"]["value"]
+    elif api_key_option == 'API key 2':
+        api_key = st.secrets["APOLLO_API_KEY_A360"]["value"]
+    elif api_key_option == 'API key 3':
+        api_key = st.secrets["APOLLO_API_KEY_N"]["value"]
+    elif api_key_option == 'API key 4':
+        api_key = st.secrets["APOLLO_API_KEY_S"]["value"]
+    domain_column_name = st.text_input("Domain column name (The person's company domain)", key="domain_column_name")
 
 if apollo_enrichment_option != "Select one Apollo enrichment script":
     if st.button("Start enrichment"):
@@ -77,6 +91,7 @@ if apollo_enrichment_option != "Select one Apollo enrichment script":
                         dataframe_result = apollo_contact_enrichment(api_key, dataframe_input, first_name_column_name, last_name_column_name, name_column_name, email_column_name, organization_name_column_name, domain_column_name, streamlit_execution)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     if apollo_enrichment_option == "Company enrichment":
+                        dataframe_result = apollo_company_enrichment(api_key, dataframe_input, domain_column_name, streamlit_execution=False)
                         st.write("Still not implemented.")
                     st.success("Enrichment completed!")
             except Exception as e:

@@ -137,7 +137,7 @@ def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_col
             progress_bar_contact_enrichment = st.progress(0)
             number_iterations = len(batches)
             index_steamlit = 0
-        #--STREAMLIT--#        
+        #--STREAMLIT--#
         for index, batch in enumerate(batches):
             details_batch = [row_to_detail(row[1]) for row in batch.iterrows()]
             response_headers, response_data = send_batch_request(details_batch)    
@@ -300,4 +300,162 @@ def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_col
         print("x_24_hour_requests_left: " + str(x_24_hour_requests_left))
         '''
 
+        return df_final
+
+def apollo_company_enrichment(api_key, df, domains_column_name, streamlit_execution=False):
+        df_original = df.copy()
+        API_ENDPOINT = 'https://api.apollo.io/api/v1/organizations/bulk_enrich'
+        headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache',}
+        def send_batch_request(batch):
+            json_data = {'api_key': api_key, 'domains': batch}
+            response = requests.post(API_ENDPOINT, headers=headers, json=json_data)
+            return response.headers, response.json()
+        columns = [
+            'loop_record_found', 'loop_id', 'loop_name', 'loop_website_url', 'loop_blog_url',
+            'loop_angellist_url', 'loop_linkedin_url', 'loop_twitter_url', 'loop_facebook_url',
+            'loop_primary_phone_number', 'loop_primary_phone_source', 'loop_languages_values',
+            'loop_alexa_ranking', 'loop_phone', 'loop_linkedin_uid', 'loop_founded_year',
+            'loop_publicly_traded_symbol', 'loop_publicly_traded_exchange', 'loop_logo_url',
+            'loop_crunchbase_url', 'loop_primary_domain', 'loop_industry', 'loop_keywords_values',
+            'loop_estimated_num_employees', 'loop_snippets_loaded', 'loop_retail_location_count',
+            'loop_raw_address', 'loop_street_address', 'loop_city', 'loop_state', 'loop_country',
+            'loop_postal_code', 'loop_account_id', 'loop_account_domain', 'loop_account_name',
+            'loop_account_phone', 'loop_account_sanitized_phone'
+        ]
+        total_rows = len(df)
+        df_final = pd.DataFrame(index=range(total_rows), columns=columns)
+        batches = [df.iloc[i:i+10] for i in range(0, len(df), 10)]
+        current_row = 0
+         #--STREAMLIT--#
+        if streamlit_execution:
+            st.write("---Company enrichment---")
+            progress_bar_company_enrichment = st.progress(0)
+            number_iterations = len(batches)
+            index_steamlit = 0
+        #--STREAMLIT--#
+        for batch in batches:
+            domains_list = batch[domains_column_name].tolist()
+            response_headers, response_data = send_batch_request(domains_list)
+            organizations = response_data.get('organizations', [])
+            for idx, organization in enumerate(organizations):
+                loop_record_found = 'Found' if organization else 'Not found'
+                org_data = {
+                    'loop_record_found': loop_record_found,
+                    'loop_id': safe_extract(organization, 'id'),
+                    'loop_name': safe_extract(organization, 'name'),
+                    'loop_website_url': safe_extract(organization, 'website_url'),
+                    'loop_blog_url': safe_extract(organization, 'blog_url'),
+                    'loop_angellist_url': safe_extract(organization, 'angellist_url'),
+                    'loop_linkedin_url': safe_extract(organization, 'linkedin_url'),
+                    'loop_twitter_url': safe_extract(organization, 'twitter_url'),
+                    'loop_facebook_url': safe_extract(organization, 'facebook_url'),
+                    'loop_primary_phone_number': safe_extract(organization, 'primary_phone', 'number'),
+                    'loop_primary_phone_source': safe_extract(organization, 'primary_phone', 'source'),
+                    'loop_languages_values': ', '.join(safe_extract(organization, 'languages') or []),
+                    'loop_alexa_ranking': safe_extract(organization, 'alexa_ranking'),
+                    'loop_phone': safe_extract(organization, 'phone'),
+                    'loop_linkedin_uid': safe_extract(organization, 'linkedin_uid'),
+                    'loop_founded_year': safe_extract(organization, 'founded_year'),
+                    'loop_publicly_traded_symbol': safe_extract(organization, 'publicly_traded_symbol'),
+                    'loop_publicly_traded_exchange': safe_extract(organization, 'publicly_traded_exchange'),
+                    'loop_logo_url': safe_extract(organization, 'logo_url'),
+                    'loop_crunchbase_url': safe_extract(organization, 'crunchbase_url'),
+                    'loop_primary_domain': domains_list[idx] if not organization else safe_extract(organization, 'primary_domain'),
+                    'loop_industry': safe_extract(organization, 'industry'),
+                    'loop_keywords_values': ', '.join(safe_extract(organization, 'keywords') or []),
+                    'loop_estimated_num_employees': safe_extract(organization, 'estimated_num_employees'),
+                    'loop_snippets_loaded': safe_extract(organization, 'snippets_loaded'),
+                    'loop_retail_location_count': safe_extract(organization, 'retail_location_count'),
+                    'loop_raw_address': safe_extract(organization, 'raw_address'),
+                    'loop_street_address': safe_extract(organization, 'street_address'),
+                    'loop_city': safe_extract(organization, 'city'),
+                    'loop_state': safe_extract(organization, 'state'),
+                    'loop_country': safe_extract(organization, 'country'),
+                    'loop_postal_code': safe_extract(organization, 'postal_code')
+                }
+                account_data = safe_extract(organization, 'account') or {}
+                org_data.update({
+                    'loop_account_id': safe_extract(account_data, 'account_id'),
+                    'loop_account_domain': safe_extract(account_data, 'domain'),
+                    'loop_account_name': safe_extract(account_data, 'name'),
+                    'loop_account_phone': safe_extract(account_data, 'phone'),
+                    'loop_account_sanitized_phone': safe_extract(account_data, 'sanitized_phone')
+                })
+                for col, value in org_data.items():
+                    df_final.at[current_row, col] = value
+                current_row += 1
+            rate_limits = {
+                'x_rate_limit_minute': int(response_headers.get('x-rate-limit-minute', '0')),
+                'x_minute_requests_left': int(response_headers.get('x-minute-requests-left', '0')),
+                'x_rate_limit_hourly': int(response_headers.get('x-rate-limit-hourly', '0')),
+                'x_hourly_requests_left': int(response_headers.get('x-hourly-requests-left', '0')),
+                'x_rate_limit_24_hour': int(response_headers.get('x-rate-limit-24-hour', '0')),
+                'x_24_hour_requests_left': int(response_headers.get('x-24-hour-requests-left', '0'))
+            }
+            next_batch_size = 10 if (idx + 1) < len(batches) else len(df) % 10
+            if rate_limits['x_24_hour_requests_left'] <= 1:
+                print('Rate limit for the day reached. Stopping further requests.')
+                break
+            elif rate_limits['x_hourly_requests_left'] <= 1:
+                print('Rate limit for the hour reached. Stopping further requests.')
+                break
+            elif rate_limits['x_minute_requests_left'] <= 1:
+                print('Rate limit for the minute reached, sleeping for 60 seconds.')
+                time.sleep(60)
+            elif rate_limits['x_hourly_requests_left'] < next_batch_size or rate_limits['x_24_hour_requests_left'] < next_batch_size:
+                print(f'Not enough credits to process the next batch of size {next_batch_size}. Stopping further requests.')
+                break
+            elif rate_limits['x_minute_requests_left'] < next_batch_size:
+                print(f'Approaching the per-minute request limit. Waiting for 60 seconds.')
+                time.sleep(60)
+            #--STREAMLIT--#
+            if streamlit_execution:
+                index_steamlit += 1
+                progress_bar_company_enrichment.progress(index_steamlit / number_iterations)
+            #--STREAMLIT--#
+        phone_columns = ['loop_primary_phone_number', 'loop_phone', 'loop_account_phone', 'loop_account_sanitized_phone']
+        for column in phone_columns:
+            if column in df_final.columns:
+                df_final[column] = df_final[column].apply(lambda x: "'" + str(x) if pd.notna(x) and str(x).startswith('+') else x)
+        rename_dict = {
+            'loop_record_found': 'Record found?',
+            'loop_id': 'Organization - ID',
+            'loop_name': 'Organization - Name',
+            'loop_website_url': 'Organization - Website URL',
+            'loop_blog_url': 'Organization - Blog URL',
+            'loop_angellist_url': 'Organization - Angellist URL',
+            'loop_linkedin_url': 'Organization - LinkedIn URL',
+            'loop_twitter_url': 'Organization - Twitter URL',
+            'loop_facebook_url': 'Organization - Facebook URL',
+            'loop_primary_phone_number': 'Organization - Primary phone number',
+            'loop_primary_phone_source': 'Organization - Primary phone source',
+            'loop_languages_values': 'Organization - Languages',
+            'loop_alexa_ranking': 'Organization - Alexa ranking',
+            'loop_phone': 'Organization - Phone',
+            'loop_linkedin_uid': 'Organization - LinkedIn UID',
+            'loop_founded_year': 'Organization - Founded year',
+            'loop_publicly_traded_symbol': 'Organization - Publicly traded symbol',
+            'loop_publicly_traded_exchange': 'Organization - Publicly traded exchange',
+            'loop_logo_url': 'Organization - Logo URL',
+            'loop_crunchbase_url': 'Organization - Crunchbase URL',
+            'loop_primary_domain': 'Organization - Primary domain',
+            'loop_industry': 'Organization - Industry',
+            'loop_keywords_values': 'Organization - Keywords',
+            'loop_estimated_num_employees': 'Organization - Estimated number of employees',
+            'loop_snippets_loaded': 'Organization - Snippets loaded?',
+            'loop_retail_location_count': 'Organization - Retail location count',
+            'loop_raw_address': 'Organization - Raw address',
+            'loop_street_address': 'Organization - Street address',
+            'loop_city': 'Organization - City',
+            'loop_state': 'Organization - State',
+            'loop_country': 'Organization - Country',
+            'loop_postal_code': 'Organization - Postal code',
+            'loop_account_id': 'Account - ID',
+            'loop_account_domain': 'Account - Domain',
+            'loop_account_name': 'Account - Name',
+            'loop_account_phone': 'Account - Phone',
+            'loop_account_sanitized_phone': 'Account - Sanitized phone'
+        }
+        df_final.rename(columns=rename_dict, inplace=True)
+        df_final = pd.concat([df_original, df_final.reset_index(drop=True)], axis=1)
         return df_final
