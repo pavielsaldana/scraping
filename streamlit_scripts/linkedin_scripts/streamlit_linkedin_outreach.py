@@ -24,6 +24,8 @@ def reset_inputs():
     st.session_state["invitation_shared_secret_column_name"] = ""
     st.session_state["vmid_column_name"] = ""
     st.session_state["message_column_name"] = ""
+    st.session_state["conversation_id_column_name"] = ""
+    st.session_state["unique_identifier_column_name"] = ""
 
 if "previous_option" not in st.session_state:
     st.session_state["previous_option"] = "Select one LinkedIn outreach script"
@@ -81,12 +83,12 @@ if linkedin_outreach_option == "Get all messages from conversations":
     li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where all the conversation ids are located)", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name (Name of the sheet where all the conversation ids are located)", key="sheet_name")
-    column_name = st.text_input("Column name (Name of the column where all the conversation ids are located)", key="column_name")
+    conversation_id_column_name = st.text_input("Column name (Name of the column where all the conversation ids are located)", key="conversation_id_column_name")
 if linkedin_outreach_option == "Mark as seen conversations":
     li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where all the conversation ids are located)", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name (Name of the sheet where all the conversation ids are located)", key="sheet_name")
-    column_name = st.text_input("Column name (Name of the column where all the conversation ids are located)", key="column_name")
+    conversation_id_column_name = st.text_input("Column name (Name of the column where all the conversation ids are located)", key="conversation_id_column_name")
     result_column_name = st.text_input("Result column name (Name of the column where all the results will be printed)", key="result_column_name")
     min_waiting_time = int(st.text_input("Minimum waiting time (Minimum waiting time in seconds for each conversation marked as seen)", "5", key="min_waiting_time"))
     max_waiting_time = int(st.text_input("Maximum waiting time (Maximum waiting time in seconds for each conversation marked as seen)", "10", key="max_waiting_time"))
@@ -94,7 +96,7 @@ if linkedin_outreach_option == "Remove connections":
     li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where all the vmids or universal names are located)", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name (Name of the sheet where all the vmids or universal names are located)", key="sheet_name")
-    column_name = st.text_input("Column name (Name of the column where all the vmids or universal names are located)", key="column_name")
+    unique_identifier_column_name = st.text_input("Column name (Name of the column where all the vmids or universal names are located)", key="unique_identifier_column_name")
     result_column_name = st.text_input("Result column name (Name of the column where all the results will be printed)", key="result_column_name")
     min_waiting_time = int(st.text_input("Minimum waiting time (Minimum waiting time in seconds for each connection removed)", "5", key="min_waiting_time"))
     max_waiting_time = int(st.text_input("Maximum waiting time (Maximum waiting time in seconds for each connection removed)", "10", key="max_waiting_time"))
@@ -112,7 +114,7 @@ if linkedin_outreach_option == "Withdraw connection requests":
     li_at = st.text_input("li_at (LinkedIn authentication cookie)", key="li_at")
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where all the invitation ids are located)", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name (Name of the sheet where all the invitation ids are located)", key="sheet_name")
-    column_name = st.text_input("Column name (Name of the column where all the invitation ids are located)", key="column_name")
+    invitation_id_column_name = st.text_input("Column name (Name of the column where all the invitation ids are located)", key="invitation_id_column_name")
     result_column_name = st.text_input("Result column name (Name of the column where all the results will be printed)", key="result_column_name")
     min_waiting_time = int(st.text_input("Minimum waiting time (Minimum waiting time in seconds for each connection request withdrawed)", "5", key="min_waiting_time"))
     max_waiting_time = int(st.text_input("Maximum waiting time (Maximum waiting time in seconds for each connection request withdrawed)", "10", key="max_waiting_time"))
@@ -121,7 +123,7 @@ if linkedin_outreach_option == "Follow or unfollow leads (must be a connection)"
     spreadsheet_url = st.text_input("Spreadsheet URL (URL of the spreadsheet where all the vmids are located)", key="spreadsheet_url")
     sheet_name = st.text_input("Sheet name (Name of the sheet where all the vmids are located)", key="sheet_name")
     action = st.selectbox("Action (Select 'follow' to follow all profiles or 'unfollow' to unfollow them)", options=["follow", "unfollow"], key="action")
-    column_name = st.text_input("Vmid column name (Name of the column where all the vmids are located)", key="column_name")
+    vmid_column_name = st.text_input("Vmid column name (Name of the column where all the vmids are located)", key="vmid_column_name")
     result_column_name = st.text_input("Result column name (Name of the column where all the results will be printed)", key="result_column_name")
     min_waiting_time = int(st.text_input("Minimum waiting time (Minimum waiting time in seconds for each connection request accepted/ignored)", "5", key="min_waiting_time"))
     max_waiting_time = int(st.text_input("Maximum waiting time (Maximum waiting time in seconds for each connection request accepted/ignored)", "10", key="max_waiting_time"))
@@ -174,22 +176,22 @@ if linkedin_outreach_option != "Select one LinkedIn outreach script":
                     dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
                 if linkedin_outreach_option == "Get all messages from conversations":
                     script_type = 'get_all_messages_from_conversation'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, streamlit_execution=True)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, conversation_id_column_name=conversation_id_column_name, streamlit_execution=True)
                 if linkedin_outreach_option == "Mark as seen conversation":
                     script_type = 'mark_conversation_as_seen_using_conversation_id'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type,  column_name=column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type,  conversation_id_column_name=conversation_id_column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
                 if linkedin_outreach_option == "Remove connections":
                     script_type = 'remove_connections'
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type,  column_name=column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type,  unique_identifier_column_name=unique_identifier_column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
                 if linkedin_outreach_option == "Accept or ignore connection requests":
                     script_type = "accept_or_remove_connection_requests"
                     dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, action=action, invitation_id_column_name=invitation_id_column_name, invitation_shared_secret_column_name=invitation_shared_secret_column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
                 if linkedin_outreach_option == "Withdraw connection requests":
                     script_type = "withdraw_connection_requests"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type,  column_name=column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type,  invitation_id_column_name=invitation_id_column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
                 if linkedin_outreach_option == "Follow or unfollow leads (must be a connection)":
                     script_type = "follow_or_unfollow_profiles"
-                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, action=action, column_name=column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
+                    dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, action=action, vmid_column_name=vmid_column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
                 if linkedin_outreach_option == "Send connection requests":
                     script_type = 'send_connection_requests'
                     dataframe_result = linkedin_outreach_scripts(csrf_token=csrf_token, cookies_dict=cookies_dict, script_type=script_type, vmid_column_name=vmid_column_name, message_column_name=message_column_name, result_column_name=result_column_name, min_waiting_time=min_waiting_time, max_waiting_time=max_waiting_time, streamlit_execution=True)
