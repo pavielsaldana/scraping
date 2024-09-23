@@ -24,7 +24,7 @@ if check_password():
     
     # Add dummy keep-alive code, but remove rerun
     if st.session_state.keep_alive:
-        time.sleep(10)  # This keeps the app from timing out
+        time.sleep(1)  # This keeps the app from timing out
     welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
                         title="Welcome",
                         icon=":material/account_circle:")
