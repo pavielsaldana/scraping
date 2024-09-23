@@ -15,8 +15,8 @@ def reset_inputs():
     st.session_state["li_at"] = ""
     st.session_state["spreadsheet_url"] = ""
     st.session_state["sheet_name"] = ""
-    st.session_state["waiting_time_min"] = "5"
-    st.session_state["waiting_time_max"] = "10"
+    st.session_state["waiting_time_min"] = 5
+    st.session_state["waiting_time_max"] = 10
     st.session_state["column_name"] = ""
     st.session_state["result_column_name"] = ""
     st.session_state["action"] = "Select action"
