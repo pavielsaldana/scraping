@@ -2,7 +2,6 @@ import asyncio
 import os
 import streamlit as st
 import sys
-import threading
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 sys.path.append(os.path.abspath('../scripts/linkedin_scripts'))
@@ -88,45 +87,37 @@ if linkedin_scraping_option == "LinkedIn job offer details scrape":
     sheet_name = st.text_input("Sheet name (Name of the sheet where the IDs of the job offers are located)", key="sheet_name")
     column_name = st.text_input("Column name (Name of the column where the IDs of the job offers are located)", key="column_name")
 
-def run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count):
-    status_text = st.empty()
-    try:
-        status_text.text("Retrieving spreadsheet...")
-        dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
-        if dataframe_input is not None and not dataframe_input.empty:
-            status_text.text("Retrieving tokens...")
-            JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)            
-            status_text.text("Starting scraping...")            
-            if linkedin_scraping_option == "Sales Navigator lead search export":
-                dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
-            elif linkedin_scraping_option == "Sales Navigator account export":
-                dataframe_result = sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn account scrape":
-                dataframe_result = linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, cookies_dict, location_count, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn lead scrape":
-                dataframe_result = linkedin_lead(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn account activity scrape":
-                dataframe_result = company_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn lead activity scrape":
-                dataframe_result = profile_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn post commenters scrape":
-                dataframe_result = post_commenters_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn job offers scrape":
-                dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-            elif linkedin_scraping_option == "LinkedIn job offer details scrape":
-                dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-            status_text.text("Writing results to spreadsheet...")
-            write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
-            status_text.text("Scraping completed!")
-    except Exception as e:
-        status_text.text(f"An error occurred: {e}")
-        st.exception(e)
-
 if linkedin_scraping_option != "Select one LinkedIn scraping script":
     if st.button("Start scraping"):
         if not li_at:
             st.error("Please fill li_at.")
-        elif not spreadsheet_url:
+        if not spreadsheet_url:
             st.error("Please fill spreadsheet URL.")
-        else:
-            run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count)
+        if li_at and spreadsheet_url:
+            try:
+                dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
+                if dataframe_input is not None and not dataframe_input.empty:
+                    JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
+                    if linkedin_scraping_option == "Sales Navigator lead search export":
+                        dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
+                    if linkedin_scraping_option == "Sales Navigator account export":
+                        dataframe_result = sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn account scrape":
+                        dataframe_result = linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, cookies_dict, location_count, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn lead scrape":
+                        dataframe_result = linkedin_lead(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn account activity scrape":
+                        dataframe_result = company_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn lead activity scrape":
+                        dataframe_result = profile_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn post commenters scrape":
+                        dataframe_result = post_commenters_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn job offers scrape":
+                        dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
+                    if linkedin_scraping_option == "LinkedIn job offer details scrape":
+                        dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)  
+                    write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
+                    st.success("Scraping completed!")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+                st.exception(e)

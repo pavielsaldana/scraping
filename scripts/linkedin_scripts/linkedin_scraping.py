@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from operator import itemgetter
 from tqdm import tqdm
 from urllib.parse import unquote, urlparse
+from stqdm import stqdm
 
 def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, max_pages=26, streamlit_execution=False):
     cookies = {
@@ -403,7 +404,7 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
     columnName_values = dataframe[column_name].tolist()
     #-->Loop
     print("LinkedIn account scrape")
-    progress_bar = tqdm(total = len(columnName_values))
+    progress_bar = stqdm(total = len(columnName_values))
     #--STREAMLIT--#
     if streamlit_execution:
         st.write("---LinkedIn account scrape---")
