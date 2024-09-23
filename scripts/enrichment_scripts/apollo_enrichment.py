@@ -6,8 +6,9 @@ import requests
 import time
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
+from stqdm import stqdm
 
-def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_column_name, name_column_name, email_column_name, organization_name_column_name, domain_column_name, streamlit_execution=False):
+def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_column_name, name_column_name, email_column_name, organization_name_column_name, domain_column_name):
         hashed_email_column_name = ''
         reveal_personal_emails = 'False'
         reveal_personal_emails_bool = (reveal_personal_emails == 'True')
@@ -131,14 +132,7 @@ def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_col
         current_row = 0
         API_ENDPOINT = 'https://api.apollo.io/api/v1/people/bulk_match'
         headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache',}
-        #--STREAMLIT--#
-        if streamlit_execution:
-            st.write("---Contact enrichment---")
-            progress_bar_contact_enrichment = st.progress(0)
-            number_iterations = len(batches)
-            index_steamlit = 0
-        #--STREAMLIT--#
-        for index, batch in enumerate(batches):
+        for index, batch in enumerate(stqdm(batches, desc="Processing contact batches")):
             details_batch = [row_to_detail(row[1]) for row in batch.iterrows()]
             response_headers, response_data = send_batch_request(details_batch)    
             matches = response_data.get('matches', [])    
@@ -269,11 +263,6 @@ def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_col
             elif rate_limits['x_minute_requests_left'] < next_batch_size:
                 print(f'Approaching the per-minute request limit. Waiting for 60 seconds.')
                 time.sleep(60)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_contact_enrichment.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
         df_final = df_final.iloc[:current_row]
         df_final = pd.concat([df_original, df_final], axis=1)
         df_final.rename(columns=all_columns, inplace=True)
@@ -302,7 +291,7 @@ def apollo_contact_enrichment(api_key, df, first_name_column_name, last_name_col
 
         return df_final
 
-def apollo_company_enrichment(api_key, df, domains_column_name, streamlit_execution=False):
+def apollo_company_enrichment(api_key, df, domains_column_name):
         df_original = df.copy()
         API_ENDPOINT = 'https://api.apollo.io/api/v1/organizations/bulk_enrich'
         headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache',}
@@ -326,14 +315,7 @@ def apollo_company_enrichment(api_key, df, domains_column_name, streamlit_execut
         df_final = pd.DataFrame(index=range(total_rows), columns=columns)
         batches = [df.iloc[i:i+10] for i in range(0, len(df), 10)]
         current_row = 0
-         #--STREAMLIT--#
-        if streamlit_execution:
-            st.write("---Company enrichment---")
-            progress_bar_company_enrichment = st.progress(0)
-            number_iterations = len(batches)
-            index_steamlit = 0
-        #--STREAMLIT--#
-        for batch in batches:
+        for batch in tqdm(batches, desc="Processing company batches"):
             domains_list = batch[domains_column_name].tolist()
             response_headers, response_data = send_batch_request(domains_list)
             organizations = response_data.get('organizations', [])
@@ -408,11 +390,6 @@ def apollo_company_enrichment(api_key, df, domains_column_name, streamlit_execut
             elif rate_limits['x_minute_requests_left'] < next_batch_size:
                 print(f'Approaching the per-minute request limit. Waiting for 60 seconds.')
                 time.sleep(60)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_company_enrichment.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
         phone_columns = ['loop_primary_phone_number', 'loop_phone', 'loop_account_phone', 'loop_account_sanitized_phone']
         for column in phone_columns:
             if column in df_final.columns:

@@ -16,7 +16,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 from bs4 import BeautifulSoup
 from collections import defaultdict
-from tqdm import tqdm
+from stqdm import stqdm
 from zenrows import ZenRowsClient
 
 from selenium.webdriver.common.by import By
@@ -123,15 +123,8 @@ def search_owler_urls(OWLER_PC_cookie, dataframe, column_name, streamlit_executi
     time.sleep(5)
     driver.get("https://www.owler.com/feed")
     time.sleep(10)
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---Search Owler URLs---")
-        progress_bar_search_owler_urls = st.progress(0)
-        number_iterations = len(dataframe[column_name])
-        index = 0
-    #--STREAMLIT--#
     print("---Search Owler URLs---")
-    for url in tqdm(dataframe[column_name]):
+    for url in stqdm(dataframe[column_name]):
         time.sleep(2)
         try:
             time.sleep(1.5)
@@ -146,35 +139,18 @@ def search_owler_urls(OWLER_PC_cookie, dataframe, column_name, streamlit_executi
             dataframe_search_results = pd.concat([dataframe_search_results, temporal_search_results_dataframe])
         except Exception:
             pass
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index += 1
-            progress_bar_search_owler_urls.progress(index / number_iterations)
-        #--STREAMLIT--#
     return dataframe_search_results    
 
 def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKey, owlerColumnName, streamlit_execution=False):
     dataframe_search_results.drop_duplicates(subset=[domainColumnName], inplace=True)
     dataframe_scrape_results = pd.DataFrame(columns=['Owler URL', 'Redirected URL' ,'Revenue range', 'Revenue 1', 'Revenue 2', 'Owler website', 'Owler domain'])
     client = ZenRowsClient(zenrowsApiKey)
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("ZenRows - Before execution")
-        check_zenrows_usage(zenrowsApiKey, streamlit_execution)
-    #--STREAMLIT--#
     print("ZenRows - Before execution")
     check_zenrows_usage(zenrowsApiKey, streamlit_execution=False)
     owler_urls = dataframe_search_results[owlerColumnName].tolist()
     owler_urls = [owler_urls[i] for i in range(len(owler_urls)) if owler_urls[i] not in owler_urls[:i]]
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---Scraping Owler URLs---")
-        progress_bar_scraping_owler_urls = st.progress(0)
-        number_iterations = len(owler_urls)
-        index = 0
-    #--STREAMLIT--#
     print("---Scraping Owler URLs---")
-    for url_scape in tqdm(owler_urls):
+    for url_scape in stqdm(owler_urls):
         params = {
             "premium_proxy": "true",
             "js_render":"true",
@@ -191,18 +167,8 @@ def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKe
         owler_domain = owler_domain.lower() if owler_domain is not None else None
         temporal_scrape_results_dataframe = pd.DataFrame({'Owler URL': [url_scape], 'Redirected URL': [redirected_url], 'Revenue range': [revenue_range], 'Revenue 1': [exact_revenue_1], 'Revenue 2': [exact_revenue_2], 'Owler website': [owler_website], 'Owler domain': [owler_domain]})
         dataframe_scrape_results = pd.concat([dataframe_scrape_results, temporal_scrape_results_dataframe])
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index += 1
-            progress_bar_scraping_owler_urls.progress(index / number_iterations)
-        #--STREAMLIT--#
     dataframe_results = dataframe_search_results.merge(dataframe_scrape_results, left_on=owlerColumnName, right_on='Owler URL')
     dataframe_results['EQ'] = (dataframe_results[domainColumnName].str.lower() == dataframe_results['Owler domain'].str.lower())
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("ZenRows - After execution")
-        check_zenrows_usage(zenrowsApiKey, streamlit_execution)
-    #--STREAMLIT--#
     print("ZenRows - After execution")
     check_zenrows_usage(zenrowsApiKey, streamlit_execution=False)
     return dataframe_results

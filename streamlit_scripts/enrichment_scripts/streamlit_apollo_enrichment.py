@@ -8,7 +8,6 @@ from scripts.enrichment_scripts.apollo_enrichment import *
 
 key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
 key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
-streamlit_execution = True
 
 st.title("Apollo enrichment scripts")
 def reset_inputs():
@@ -102,10 +101,10 @@ if apollo_enrichment_option != "Select one Apollo enrichment script":
                 dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
                 if dataframe_input is not None and not dataframe_input.empty:
                     if apollo_enrichment_option == "Contact enrichment":
-                        dataframe_result = apollo_contact_enrichment(api_key, dataframe_input, first_name_column_name, last_name_column_name, name_column_name, email_column_name, organization_name_column_name, domain_column_name, streamlit_execution)
+                        dataframe_result = apollo_contact_enrichment(api_key, dataframe_input, first_name_column_name, last_name_column_name, name_column_name, email_column_name, organization_name_column_name, domain_column_name)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     if apollo_enrichment_option == "Company enrichment":
-                        dataframe_result = apollo_company_enrichment(api_key, dataframe_input, domain_column_name, streamlit_execution)
+                        dataframe_result = apollo_company_enrichment(api_key, dataframe_input, domain_column_name)
                         write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
                     st.success("Enrichment completed!")
             except Exception as e:

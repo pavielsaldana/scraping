@@ -14,7 +14,7 @@ from operator import itemgetter
 from urllib.parse import unquote, urlparse
 from stqdm import stqdm
 
-def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, max_pages=26, streamlit_execution=False):
+def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, max_pages=26):
     cookies = {
         'li_at': li_at,
         'JSESSIONID': JSESSIONID,
@@ -175,7 +175,7 @@ def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, 
     df_final = df_final.reindex(columns=columns_desired)
     df_final = df_final[columns_desired]
     return df_final
-def sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, max_pages=17, streamlit_execution=False):
+def sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, max_pages=17):
     cookies = {
         'li_at': li_at,
         'JSESSIONID': JSESSIONID,
@@ -294,7 +294,7 @@ def sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, datafram
     df_final = df_final.reindex(columns=columns_desired)
     df_final = df_final[columns_desired]
     return df_final
-def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, cookies_dict, location_count=100, streamlit_execution=False):
+def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name, cookies_dict, location_count=100):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
@@ -958,7 +958,7 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
         df_final = pd.concat([df_final, pd.DataFrame(columns=list(missing_columns))], axis=1)
     df_final = df_final[final_list]
     return df_final
-def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_execution=False):
+def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
@@ -1479,7 +1479,7 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
     df_final = df_final.reindex(columns=final_columns)
     df_final = df_final[final_columns]
     return df_final
-def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict, streamlit_execution=False):
+def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
@@ -1651,7 +1651,7 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
     final_columns = ["query","error","postUrl","imgUrl","postContent","postType","likeCount","commentCount","repostCount","postDate","action","profileUrl","timestamp","sharedPostUrl","sharedJobUrl","isSponsored"]
     df_final = df_final.reindex(columns=final_columns, fill_value=None)
     return df_final
-def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, streamlit_execution=False):
+def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
@@ -1804,7 +1804,7 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
     final_columns = ['query', 'error', 'jobOfferId', 'jobOfferUrl', 'jobOfferTitle', 'posterId', 'contentSource', 'repostedJob', 'timestamp']
     df_final = df_final.reindex(columns=final_columns, fill_value=None)
     return df_final
-def job_offers_details_extractor(csrf_token, dataframe, column_name, cookies_dict, streamlit_execution=False):
+def job_offers_details_extractor(csrf_token, dataframe, column_name, cookies_dict):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
@@ -1912,7 +1912,7 @@ def job_offers_details_extractor(csrf_token, dataframe, column_name, cookies_dic
     }
     df_final.rename(columns=job_rename_dict, inplace=True)
     return df_final
-def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, streamlit_execution=False):
+def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
@@ -2217,7 +2217,7 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
     final_columns = ["query","error","profileLink","vmid","publicProfileLink","publicIdentifier","firstName","lastName","fullName","occupation","degree","commentText","commentUrl","isFromPostAuthor","commentDate","likesCount","commentsCount","postUrl","timestamp","banner200x800","banner350x1400","picture100x100","picture200x200","picture400x400","picture800x800"]
     df_final = df_final.reindex(columns=final_columns, fill_value=None)
     return df_final
-def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict, streamlit_execution=False):
+def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict):
     headers = {
         'csrf-token': csrf_token,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',

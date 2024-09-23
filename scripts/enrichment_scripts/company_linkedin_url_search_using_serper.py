@@ -7,19 +7,12 @@ import streamlit as st
 import sys
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
-from tqdm import tqdm
+from stqdm import stqdm
 
 def company_linkedin_url_search_using_serper(dataframe, columnName, apiKey, streamlit_execution=False):
     columnName_values = dataframe[columnName].tolist()
     df_final = pd.DataFrame()
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---Company LinkedIn URL search using Serper---")
-        progress_bar_company_linkedin_url_search_using_serper = st.progress(0)
-        number_iterations = len(dataframe)
-        index_steamlit = 0
-    #--STREAMLIT--#
-    for columnName_value in tqdm(columnName_values, desc="Processing"):
+    for columnName_value in stqdm(columnName_values, desc="Processing"):
         request_base_url = "https://google.serper.dev/search"
         payload = json.dumps({
             "q": f'"{columnName_value}" site:linkedin.com',
@@ -74,9 +67,4 @@ def company_linkedin_url_search_using_serper(dataframe, columnName, apiKey, stre
             df_loop_final = pd.concat([df_loop_final, df_loop], axis=1)
             df_final = pd.concat([df_final, df_loop_final])
             pass
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_company_linkedin_url_search_using_serper.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     return df_final
