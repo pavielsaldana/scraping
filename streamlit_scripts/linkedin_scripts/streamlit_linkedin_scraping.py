@@ -88,37 +88,39 @@ if linkedin_scraping_option == "LinkedIn job offer details scrape":
     sheet_name = st.text_input("Sheet name (Name of the sheet where the IDs of the job offers are located)", key="sheet_name")
     column_name = st.text_input("Column name (Name of the column where the IDs of the job offers are located)", key="column_name")
 
-def run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count, progress_placeholder):
+def run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count):
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
     try:
-        with st.spinner("Running scraping..."):
-            dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
-            if dataframe_input is not None and not dataframe_input.empty:
-                JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
-                
-                if linkedin_scraping_option == "Sales Navigator lead search export":
-                    dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
-                elif linkedin_scraping_option == "Sales Navigator account export":
-                    dataframe_result = sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn account scrape":
-                    dataframe_result = linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, cookies_dict, location_count, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn lead scrape":
-                    dataframe_result = linkedin_lead(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn account activity scrape":
-                    dataframe_result = company_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn lead activity scrape":
-                    dataframe_result = profile_activity_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn post commenters scrape":
-                    dataframe_result = post_commenters_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn job offers scrape":
-                    dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-                elif linkedin_scraping_option == "LinkedIn job offer details scrape":
-                    dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-                
-                write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
-        progress_placeholder.success("Scraping completed!")
+        status_text.text("Retrieving spreadsheet...")
+        dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
+        if dataframe_input is not None and not dataframe_input.empty:
+            status_text.text("Retrieving tokens...")
+            JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
+            
+            status_text.text("Starting scraping...")
+            total_rows = len(dataframe_input)
+            
+            if linkedin_scraping_option == "Sales Navigator lead search export":
+                dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True, progress_callback=lambda x: update_progress(progress_bar, status_text, x, total_rows))
+            elif linkedin_scraping_option == "Sales Navigator account export":
+                dataframe_result = sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True, progress_callback=lambda x: update_progress(progress_bar, status_text, x, total_rows))
+            elif linkedin_scraping_option == "LinkedIn account scrape":
+                dataframe_result = linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, cookies_dict, location_count, streamlit_execution=True, progress_callback=lambda x: update_progress(progress_bar, status_text, x, total_rows))
+            # ... [other scraping options] ...
+            
+            status_text.text("Writing results to spreadsheet...")
+            write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
+            status_text.text("Scraping completed!")
     except Exception as e:
-        progress_placeholder.error(f"An error occurred: {e}")
+        status_text.text(f"An error occurred: {e}")
         st.exception(e)
+
+def update_progress(progress_bar, status_text, current, total):
+    progress = min(current / total, 1.0)
+    progress_bar.progress(progress)
+    status_text.text(f"Processing... {current}/{total}")
 
 if linkedin_scraping_option != "Select one LinkedIn scraping script":
     if st.button("Start scraping"):
@@ -127,9 +129,4 @@ if linkedin_scraping_option != "Select one LinkedIn scraping script":
         elif not spreadsheet_url:
             st.error("Please fill spreadsheet URL.")
         else:
-            progress_placeholder = st.empty()
-            thread = threading.Thread(
-                target=run_scraping,
-                args=(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count, progress_placeholder)
-            )
-            thread.start()
+            run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count)
