@@ -1,6 +1,8 @@
 import os
 import hmac
 import streamlit as st
+import time
+import threading
 
 st.set_page_config(page_title="ABM App", page_icon="https://media.licdn.com/dms/image/v2/C4E0BAQEUNQJN0rf-yQ/company-logo_200_200/company-logo_200_200/0/1630648936722/kalungi_inc_logo?e=2147483647&v=beta&t=4vrP50CSK9jEFI7xtF7DzTlSMZdjmq__F0eG8IJwfN8")
 def check_password():
@@ -19,6 +21,16 @@ def check_password():
         st.error("Password incorrect")
     return False
 if check_password():
+    if 'keep_alive' not in st.session_state:
+        st.session_state.keep_alive = True
+    def keep_session_alive():
+        while st.session_state.keep_alive:
+            time.sleep(10)
+            st.experimental_rerun()
+    if 'keep_alive_thread' not in st.session_state:
+        thread = threading.Thread(target=keep_session_alive)
+        thread.start()
+        st.session_state.keep_alive_thread = thread
     welcome_page = st.Page("streamlit_scripts/streamlit_welcome.py",
                         title="Welcome",
                         icon=":material/account_circle:")
