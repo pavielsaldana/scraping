@@ -35,10 +35,9 @@ if check_password():
     if 'keep_alive' not in st.session_state:
         st.session_state.keep_alive = True
     
-    # Keep the session alive using rerun without threading
+    # Add dummy keep-alive code, but remove rerun
     if st.session_state.keep_alive:
-        time.sleep(10)
-        st.experimental_rerun()
+        time.sleep(10)  # This keeps the app from timing out
     
     # Navigation menu logic
     st.sidebar.title("Navigation")
