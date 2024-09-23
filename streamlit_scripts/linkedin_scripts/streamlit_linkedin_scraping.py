@@ -89,18 +89,14 @@ if linkedin_scraping_option == "LinkedIn job offer details scrape":
     column_name = st.text_input("Column name (Name of the column where the IDs of the job offers are located)", key="column_name")
 
 def run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, column_name, location_count):
-    progress_bar = st.progress(0)
     status_text = st.empty()
-    
     try:
         status_text.text("Retrieving spreadsheet...")
         dataframe_input = retrieve_spreadsheet(spreadsheet_url, sheet_name, key_dict)
         if dataframe_input is not None and not dataframe_input.empty:
             status_text.text("Retrieving tokens...")
-            JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)
-            
-            status_text.text("Starting scraping...")
-            
+            JSESSIONID, li_a, csrf_token, cookies_dict = retrieve_tokens_selenium(li_at)            
+            status_text.text("Starting scraping...")            
             if linkedin_scraping_option == "Sales Navigator lead search export":
                 dataframe_result = sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe_input, column_name, streamlit_execution=True)
             elif linkedin_scraping_option == "Sales Navigator account export":
@@ -119,19 +115,12 @@ def run_scraping(linkedin_scraping_option, li_at, spreadsheet_url, sheet_name, c
                 dataframe_result = job_offers_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
             elif linkedin_scraping_option == "LinkedIn job offer details scrape":
                 dataframe_result = job_offers_details_extractor(csrf_token, dataframe_input, column_name, cookies_dict, streamlit_execution=True)
-
-
             status_text.text("Writing results to spreadsheet...")
             write_into_spreadsheet(spreadsheet_url, sheet_name, dataframe_result, key_dict)
             status_text.text("Scraping completed!")
     except Exception as e:
         status_text.text(f"An error occurred: {e}")
         st.exception(e)
-
-def update_progress(progress_bar, status_text, current, total):
-    progress = min(current / total, 1.0)
-    progress_bar.progress(progress)
-    status_text.text(f"Processing... {current}/{total}")
 
 if linkedin_scraping_option != "Select one LinkedIn scraping script":
     if st.button("Start scraping"):
