@@ -11,7 +11,6 @@ import tldextract
 import urllib.parse
 from datetime import datetime, timezone
 from operator import itemgetter
-from tqdm import tqdm
 from urllib.parse import unquote, urlparse
 from stqdm import stqdm
 
@@ -67,16 +66,9 @@ def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, 
     dataframe.drop_duplicates(subset=[column_name], inplace=True)
     columnName_values = dataframe[column_name].tolist()
     print("Sales Navigator lead export")
-    progress_bar = tqdm(total=len(columnName_values))
+    progress_bar = stqdm(total=len(columnName_values))
     df_final = pd.DataFrame()
     too_many_requests = False
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---Sales Navigator lead search export---")
-        progress_bar_sales_navigator_lead_export = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
     for index, value in enumerate(columnName_values):
         if index != 0 and index % 300 == 0:
             print("Waiting for 90 seconds...")
@@ -160,11 +152,6 @@ def sales_navigator_lead_export(li_at, JSESSIONID, li_a, csrf_token, dataframe, 
                     break
         index += 1
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_sales_navigator_lead_export.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     columns_rename = {
         'contact_lastName': 'lastName',
@@ -216,16 +203,9 @@ def sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, datafram
     dataframe.drop_duplicates(subset=[column_name], inplace=True)
     columnName_values = dataframe[column_name].tolist()
     print("Sales Navigator account export")
-    progress_bar = tqdm(total=len(columnName_values))
+    progress_bar = stqdm(total=len(columnName_values))
     df_final = pd.DataFrame()
     too_many_requests = False
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---Sales Navigator account export---")
-        progress_bar_sales_navigator_account_export = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
     for index, value in enumerate(columnName_values):
         if index != 0 and (index % 300 == 0 or index % 299 == 0):
             print("Waiting for 90 seconds...")
@@ -309,11 +289,6 @@ def sales_navigator_account_export(li_at, JSESSIONID, li_a, csrf_token, datafram
                     break
         progress_bar.update(1)
         progress_bar.refresh()
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_sales_navigator_account_export.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     columns_desired = ['query', 'error', 'companyUrl', 'companyName', 'description', 'companyId', 'regularCompanyUrl', 'industry', 'employeesCount', 'employeeCountRange', 'logo100x100', 'logo200x200', 'logo400x400', 'isHiring', 'had2SeniorLeadershipChanges', 'has1Connection', 'hadFundingEvent', 'timestamp']
     df_final = df_final.reindex(columns=columns_desired)
@@ -405,13 +380,6 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
     #-->Loop
     print("LinkedIn account scrape")
     progress_bar = stqdm(total = len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn account scrape---")
-        progress_bar_linkedin_account = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
     for index, company in enumerate(columnName_values):
         df_loop_final = pd.DataFrame()
         df_loop_base = pd.DataFrame()
@@ -435,11 +403,6 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_account.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         #-->WAIT FOR EMPLOYEESONLINKEDIN TO BE MORE THAN 0 START
         max_employeesOnLinkedIn_tries = 3
@@ -482,11 +445,6 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_account.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         except Exception as e:
             company = {}
@@ -496,11 +454,6 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_account.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             time.sleep(2.5)
             continue
         #-->DATA MANIPULATION START<--
@@ -651,11 +604,6 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_account.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         if len(company_insights.get('elements', [])) > 0:
             #-->headcountInsights, functionHeadcountInsights, hiresInsights, alumniInsights, jobOpeningsInsights
@@ -952,22 +900,12 @@ def linkedin_account(li_at, JSESSIONID, li_a, csrf_token, dataframe, column_name
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_account.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
         else:
             df_loop_final = pd.DataFrame({'query': [columnName_values[index]], 'wordToSearch': [wordToSearch], 'error': [error]})
             df_loop_final = pd.concat([df_loop_final, df_loop_base, df_loop_confirmedLocations, df_loop_premium_not_final, df_loop_headcountInsights, df_loop_latestHeadcountByFunction, df_loop_headcountGrowthByFunction, df_loop_jobOpeningsByFunction, df_loop_jobOpeningsGrowthByFunction, df_loop_hiresInsights, df_loop_alumniInsights], axis=1)
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_account.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
     progress_bar.close()
     COLUMN_PATTERNS = {
@@ -1360,14 +1298,7 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
     original_to_wordToSearch = dict(zip(dataframe[column_name], dataframe['wordToSearch']))
     columnName_values = dataframe[column_name].tolist()
     print("LinkedIn lead scrape")
-    progress_bar = tqdm(total = len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn lead scrape---")
-        progress_bar_linkedin_lead = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
+    progress_bar = stqdm(total = len(columnName_values))
     for index, profile in enumerate(columnName_values):
         df_loop_final = pd.DataFrame()
         df_loop_base = pd.DataFrame()
@@ -1388,11 +1319,6 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_lead.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         try:
             request_url_profileView = f'https://www.linkedin.com/voyager/api/identity/profiles/{urllib.parse.unquote(wordToSearch)}/profileView'
@@ -1407,11 +1333,6 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_lead.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         except Exception as e:
             profile = {}
@@ -1421,11 +1342,6 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_linkedin_lead.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         #-->network_info
         try:
@@ -1554,11 +1470,6 @@ def linkedin_lead(csrf_token, dataframe, column_name, cookies_dict, streamlit_ex
         df_final = pd.concat([df_final, df_loop_final])
         index += 1
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_linkedin_lead.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()    
     selected_columns = []
     for columns in columns_lists.values():
@@ -1647,14 +1558,7 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
     original_to_wordToSearch = dict(zip(dataframe[column_name], dataframe['wordToSearch']))
     columnName_values = dataframe[column_name].tolist()
     print("LinkedIn company activity extractor")
-    progress_bar = tqdm(total = len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn account activity scrape---")
-        progress_bar_company_activity_extractor = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
+    progress_bar = stqdm(total = len(columnName_values))
     for index, company in enumerate(columnName_values):
         df_loop_final = pd.DataFrame()
         df_loop_base = pd.DataFrame()
@@ -1666,11 +1570,6 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_company_activity_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         try:
             company_posts = fetch_company_updates(wordToSearch)
@@ -1680,11 +1579,6 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
                 df_final = pd.concat([df_final, df_loop_final])
                 index += 1
                 progress_bar.update(1)
-                #--STREAMLIT--#
-                if streamlit_execution:
-                    index_steamlit += 1
-                    progress_bar_company_activity_extractor.progress(index_steamlit / number_iterations)
-                #--STREAMLIT--#
                 continue
         except ForbiddenAccessException as e:
             company_posts = {}
@@ -1693,11 +1587,6 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_company_activity_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         except Exception as e:
             company_posts = {}
@@ -1706,11 +1595,6 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_company_activity_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         #-->DATA MANIPULATION START<--
         for post in company_posts:
@@ -1762,11 +1646,6 @@ def company_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
         index += 1
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_company_activity_extractor.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     #-->Columns manipulation
     final_columns = ["query","error","postUrl","imgUrl","postContent","postType","likeCount","commentCount","repostCount","postDate","action","profileUrl","timestamp","sharedPostUrl","sharedJobUrl","isSponsored"]
@@ -1829,14 +1708,7 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
     original_to_wordToSearch = dict(zip(dataframe[column_name], dataframe['wordToSearch']))
     columnName_values = dataframe[column_name].tolist()
     print('LinkedIn job offers extractor')
-    progress_bar = tqdm(total = len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn job offers scrape---")
-        progress_bar_job_offers_extractor = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
+    progress_bar = stqdm(total = len(columnName_values))
     for index, company in enumerate(columnName_values):
         df_loop_final = pd.DataFrame()
         wordToSearch = original_to_wordToSearch.get(columnName_values[index])
@@ -1849,11 +1721,6 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_job_offers_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         try:
             int(wordToSearch)
@@ -1874,11 +1741,6 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
                 df_final = pd.concat([df_final, df_loop_final])
                 index += 1
                 progress_bar.update(1)
-                #--STREAMLIT--#
-                if streamlit_execution:
-                    index_steamlit += 1
-                    progress_bar_job_offers_extractor.progress(index_steamlit / number_iterations)
-                #--STREAMLIT--#
                 continue
         try:
             job_postings = get_all_job_postings(wordToSearch)
@@ -1888,11 +1750,6 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
                 df_final = pd.concat([df_final, df_loop_final])
                 index += 1
                 progress_bar.update(1)
-                #--STREAMLIT--#
-                if streamlit_execution:
-                    index_steamlit += 1
-                    progress_bar_job_offers_extractor.progress(index_steamlit / number_iterations)
-                #--STREAMLIT--#
                 continue
         except ForbiddenAccessException as e:
             job_postings = []
@@ -1901,11 +1758,6 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_job_offers_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         except Exception as e:
             job_postings = []
@@ -1914,11 +1766,6 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_job_offers_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue       
         for job_posting in job_postings:
              #-->DATA MANIPULATION START<--
@@ -1946,11 +1793,6 @@ def job_offers_extractor(csrf_token, dataframe, column_name, cookies_dict, strea
             df_final = pd.concat([df_final, df_loop_final])
         index += 1
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_job_offers_extractor.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     job_postings_rename_dict = {
         "entityUrn": "jobOfferId",
@@ -1993,14 +1835,7 @@ def job_offers_details_extractor(csrf_token, dataframe, column_name, cookies_dic
     columnName_values = dataframe[column_name].tolist()
     df_final = pd.DataFrame()
     print('LinkedIn job offers scraping')
-    progress_bar = tqdm(total=len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn job offer details scrape---")
-        progress_bar_job_offers_details_extractor = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
+    progress_bar = stqdm(total=len(columnName_values))
     for item in columnName_values:
         job_json = get_job(item)
         # Company
@@ -2057,11 +1892,6 @@ def job_offers_details_extractor(csrf_token, dataframe, column_name, cookies_dic
         df_final = pd.concat([df_final, df_loop])
         time.sleep(1.5)
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_job_offers_details_extractor.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     job_rename_dict = {
         "name": "companyName",
@@ -2156,14 +1986,7 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
     original_to_wordToSearch = dict(zip(dataframe[column_name], dataframe['wordToSearch']))
     columnName_values = dataframe[column_name].tolist()
     print("LinkedIn post commenters extractor")
-    progress_bar = tqdm(total = len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn post commenters scrape---")
-        progress_bar_post_commenters_extractor = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
+    progress_bar = stqdm(total = len(columnName_values))
     for index, profile in enumerate(columnName_values):
         df_loop_final = pd.DataFrame()
         df_loop_base = pd.DataFrame()
@@ -2177,11 +2000,6 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_post_commenters_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         try:
             activity_comments = fetch_activity_comments(wordToSearch)
@@ -2191,11 +2009,6 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
                 df_final = pd.concat([df_final, df_loop_final])
                 index += 1
                 progress_bar.update(1)
-                #--STREAMLIT--#
-                if streamlit_execution:
-                    index_steamlit += 1
-                    progress_bar_post_commenters_extractor.progress(index_steamlit / number_iterations)
-                #--STREAMLIT--#
                 continue
         except ForbiddenAccessException as e:
             activity_comments = {}
@@ -2204,11 +2017,6 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_post_commenters_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         except Exception as e:
             activity_comments = {}
@@ -2217,11 +2025,6 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_post_commenters_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         #-->DATA MANIPULATION START<--
         for comment in activity_comments:
@@ -2409,11 +2212,6 @@ def post_commenters_extractor(csrf_token, dataframe, column_name, cookies_dict, 
             df_final = pd.concat([df_final, df_loop_final])
         index += 1
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_post_commenters_extractor.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     #-->Columns manipulation
     final_columns = ["query","error","profileLink","vmid","publicProfileLink","publicIdentifier","firstName","lastName","fullName","occupation","degree","commentText","commentUrl","isFromPostAuthor","commentDate","likesCount","commentsCount","postUrl","timestamp","banner200x800","banner350x1400","picture100x100","picture200x200","picture400x400","picture800x800"]
@@ -2498,14 +2296,7 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
     original_to_wordToSearch = dict(zip(dataframe[column_name], dataframe['wordToSearch']))
     columnName_values = dataframe[column_name].tolist()
     print("LinkedIn profile activity extractor")
-    progress_bar = tqdm(total = len(columnName_values))
-    #--STREAMLIT--#
-    if streamlit_execution:
-        st.write("---LinkedIn lead activity scrape---")
-        progress_bar_profile_activity_extractor = st.progress(0)
-        number_iterations = len(columnName_values)
-        index_steamlit = 0
-    #--STREAMLIT--#
+    progress_bar = stqdm(total = len(columnName_values))
     for index, profile in enumerate(columnName_values):
         df_loop_final = pd.DataFrame()
         df_loop_base = pd.DataFrame()
@@ -2517,11 +2308,6 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_profile_activity_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         try:
             profile_posts = fetch_person_updates(wordToSearch)
@@ -2531,11 +2317,6 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
                 df_final = pd.concat([df_final, df_loop_final])
                 index += 1
                 progress_bar.update(1)
-                #--STREAMLIT--#
-                if streamlit_execution:
-                    index_steamlit += 1
-                    progress_bar_profile_activity_extractor.progress(index_steamlit / number_iterations)
-                #--STREAMLIT--#
                 continue
         except ForbiddenAccessException as e:
             profile_posts = {}
@@ -2544,11 +2325,6 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_profile_activity_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         except Exception as e:
             profile_posts = {}
@@ -2557,11 +2333,6 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
             index += 1
             progress_bar.update(1)
-            #--STREAMLIT--#
-            if streamlit_execution:
-                index_steamlit += 1
-                progress_bar_profile_activity_extractor.progress(index_steamlit / number_iterations)
-            #--STREAMLIT--#
             continue
         #-->DATA MANIPULATION START<--
         for post in profile_posts:
@@ -2613,11 +2384,6 @@ def profile_activity_extractor(csrf_token, dataframe, column_name, cookies_dict,
             df_final = pd.concat([df_final, df_loop_final])
         index += 1
         progress_bar.update(1)
-        #--STREAMLIT--#
-        if streamlit_execution:
-            index_steamlit += 1
-            progress_bar_profile_activity_extractor.progress(index_steamlit / number_iterations)
-        #--STREAMLIT--#
     progress_bar.close()
     #-->Columns manipulation
     final_columns = ["query","error","postUrl","imgUrl","postContent","postType","likeCount","commentCount","repostCount","postDate","action","profileUrl","timestamp","sharedPostUrl","sharedJobUrl","isSponsored"]
