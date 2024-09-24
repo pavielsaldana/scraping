@@ -50,7 +50,7 @@ if check_password():
     apollo_enrichment_page = st.Page("streamlit_scripts/enrichment_scripts/streamlit_apollo_enrichment.py",
                         title="Apollo enrichment",
                         icon=":material/checklist_rtl:")
-    anvil.works_test_page = st.Page("streamlit_scripts/enrichment_scripts/streamlit_anvil.works_test.py",
+    anvil_works_test_page = st.Page("streamlit_scripts/enrichment_scripts/streamlit_anvil_works_test.py",
                         title="anvil.works test",
                         icon=":material/checklist_rtl:")
     pg = st.navigation(
