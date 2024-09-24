@@ -59,7 +59,7 @@ if check_password():
             "LinkedIn scripts": [linkedin_scraping_page, linkedin_search_page, linkedin_outreach_page,],
             "Enrichment scripts": [ai_qa_page, owler_revenue_page,company_linkedin_url_search_using_serper_page,apollo_enrichment_page,],
             "Data cleaning": [ai_title_cleaning_page,],
-            "Test": [works_test_page]
+            "Test": [anvil_works_test_page]
         }
     )
     st.logo("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYXyGNY0mQSyCRUKXrXWI4-O31kspcM0eVLg&s")
