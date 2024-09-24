@@ -1,5 +1,7 @@
 import anvil.server
 import streamlit as st
+sys.path.append(os.path.abspath('../scripts/helper_scripts'))
+from scripts.helper_scripts import *
 
 # Connect to Anvil Uplink
 anvil.server.connect("server_DHRQTXHJAMIELJIFKJJXFHLT-7GHUM6DVFBDW5NPJ")
