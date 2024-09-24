@@ -129,7 +129,6 @@ def search_owler_urls(OWLER_PC_cookie, dataframe, column_name, streamlit_executi
     time.sleep(5)
     driver.get("https://www.owler.com/feed")
     time.sleep(10)
-    print("---Search Owler URLs---")
     for url in stqdm(dataframe[column_name]):
         time.sleep(2)
         try:
@@ -145,7 +144,7 @@ def search_owler_urls(OWLER_PC_cookie, dataframe, column_name, streamlit_executi
             dataframe_search_results = pd.concat([dataframe_search_results, temporal_search_results_dataframe])
         except Exception:
             pass
-    return dataframe_search_results    
+    return dataframe_search_results
 
 def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKey, owlerColumnName, streamlit_execution=False):
     dataframe_search_results.drop_duplicates(subset=[domainColumnName], inplace=True)
@@ -155,24 +154,27 @@ def scraping_owler_urls(dataframe_search_results, domainColumnName, zenrowsApiKe
     check_zenrows_usage(zenrowsApiKey, streamlit_execution=False)
     owler_urls = dataframe_search_results[owlerColumnName].tolist()
     owler_urls = [owler_urls[i] for i in range(len(owler_urls)) if owler_urls[i] not in owler_urls[:i]]
-    print("---Scraping Owler URLs---")
+    def fetch_url(client, url, params=None):
+        response = client.get(url, params=params) if params else client.get(url)
+        return response
     for url_scape in stqdm(owler_urls):
-        params = {
-            "premium_proxy": "true",
-            "js_render":"true",
-        }
-        response = client.get(url_scape, params=params)
-        html_content = response.text
-        redirected_url = response.url
-        redirected_url = urllib.parse.unquote(re.search(r"https://api\.zenrows\.com/v1/\?url=(.*)&apikey=", redirected_url).group(1)) if redirected_url and re.search(r"https://api\.zenrows\.com/v1/\?url=(.*)&apikey=", redirected_url) else None
-        revenue_range = extract_revenue_method1(html_content)
-        exact_revenue_1 = extract_revenue_method2(html_content)
-        exact_revenue_2 = extract_revenue_method3(html_content)
-        owler_website = extract_website(html_content)
-        owler_domain = extract_domain(owler_website)
-        owler_domain = owler_domain.lower() if owler_domain is not None else None
-        temporal_scrape_results_dataframe = pd.DataFrame({'Owler URL': [url_scape], 'Redirected URL': [redirected_url], 'Revenue range': [revenue_range], 'Revenue 1': [exact_revenue_1], 'Revenue 2': [exact_revenue_2], 'Owler website': [owler_website], 'Owler domain': [owler_domain]})
-        dataframe_scrape_results = pd.concat([dataframe_scrape_results, temporal_scrape_results_dataframe])
+        response = fetch_url(client, url_scape)
+        if not response or response.status_code != 200:
+            response = fetch_url(client, url_scape, params={"js_render": "true"})
+        if not response or response.status_code != 200:
+            response = fetch_url(client, url_scape, params={"js_render": "true", "premium_proxy": "true"})
+        if response and response.status_code == 200:
+            html_content = response.text
+            redirected_url = response.url
+            redirected_url = urllib.parse.unquote(re.search(r"https://api\.zenrows\.com/v1/\?url=(.*)&apikey=", redirected_url).group(1)) if redirected_url and re.search(r"https://api\.zenrows\.com/v1/\?url=(.*)&apikey=", redirected_url) else None
+            revenue_range = extract_revenue_method1(html_content)
+            exact_revenue_1 = extract_revenue_method2(html_content)
+            exact_revenue_2 = extract_revenue_method3(html_content)
+            owler_website = extract_website(html_content)
+            owler_domain = extract_domain(owler_website)
+            owler_domain = owler_domain.lower() if owler_domain is not None else None
+            temporal_scrape_results_dataframe = pd.DataFrame({'Owler URL': [url_scape], 'Redirected URL': [redirected_url], 'Revenue range': [revenue_range], 'Revenue 1': [exact_revenue_1], 'Revenue 2': [exact_revenue_2], 'Owler website': [owler_website], 'Owler domain': [owler_domain]})
+            dataframe_scrape_results = pd.concat([dataframe_scrape_results, temporal_scrape_results_dataframe])
     dataframe_results = dataframe_search_results.merge(dataframe_scrape_results, left_on=owlerColumnName, right_on='Owler URL')
     dataframe_results['EQ'] = (dataframe_results[domainColumnName].str.lower() == dataframe_results['Owler domain'].str.lower())
     print("ZenRows - After execution")
