@@ -32,6 +32,7 @@ if st.button("Start searching"):
             
             # Start background task in Anvil
             if dataframe_input is not None and not dataframe_input.empty:
+                dataframe_as_list = dataframe_input.to_dict(orient='records')  # Convert DataFrame to a list of dictionaries
                 task_id = anvil.server.call('start_linkedin_search_task', dataframe_input, column_name, serper_api_key)
                 st.session_state['task_id'] = task_id
                 st.write(f"Task {task_id} started...")
