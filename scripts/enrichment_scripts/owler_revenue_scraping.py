@@ -50,16 +50,22 @@ def extract_revenue_method2(html):
     except Exception as e:
         return None
 def extract_revenue_method3(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    next_data_script = soup.find('script', {'id': '__NEXT_DATA__'})
-    if next_data_script:
-        data = json.loads(next_data_script.string, object_hook=lambda d: defaultdict(lambda: None, d))
-        formatted_revenue = data['props']['initialState']['formattedRevenue']
-        if formatted_revenue:
-            return '$'+formatted_revenue
-        else:
-            return formatted_revenue
-    return None
+    try:
+        soup = BeautifulSoup(html, 'html.parser')
+        next_data_script = soup.find('script', {'id': '__NEXT_DATA__'})    
+        if next_data_script and next_data_script.string:        
+            try:
+                data = json.loads(next_data_script.string, object_hook=lambda d: defaultdict(lambda: None, d))
+            except json.JSONDecodeError as e:
+                return None
+            formatted_revenue = data['props']['initialState'].get('formattedRevenue')            
+            if formatted_revenue:
+                return '$' + formatted_revenue
+            else:
+                return formatted_revenue        
+        return None
+    except Exception as e:
+        return None
 def extract_website(html):
     soup = BeautifulSoup(html, 'html.parser')
     a = soup.find('a', {'class': 'cp-link link primary'})
