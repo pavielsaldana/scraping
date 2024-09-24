@@ -22,4 +22,3 @@ plotly
 scipy
 scikit-learn
 stqdm
-anvil-uplink
