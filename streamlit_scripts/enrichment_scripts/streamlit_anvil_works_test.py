@@ -5,6 +5,9 @@ import os
 sys.path.append(os.path.abspath('../scripts/helper_scripts'))
 from scripts.helper_scripts import *
 
+key_dict = dict(st.secrets["GOOGLE_CLOUD_CREDENTIALS"])
+key_dict["private_key"] = key_dict["private_key"].replace("\\n", "\n")
+
 # Connect to Anvil Uplink
 anvil.server.connect("server_DHRQTXHJAMIELJIFKJJXFHLT-7GHUM6DVFBDW5NPJ")
 
